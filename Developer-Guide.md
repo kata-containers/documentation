@@ -135,7 +135,7 @@ $ script -fec 'sudo -E GOPATH=$GOPATH USE_DOCKER=true ./rootfs.sh clearlinux'
 > - You only do this step if you test with the latest version of the agent.
 
 ```
-$ sudo install -o root -g root -m 0550 -t rootfs/bin ../../agent/kata-agent
+$ sudo install -o root -g root -m 0550 -t rootfs-${distro}/bin ../../agent/kata-agent
 $ sudo install -o root -g root -m 0440 ../../agent/kata-agent.service rootfs/usr/lib/systemd/system/
 $ sudo install -o root -g root -m 0440 ../../agent/kata-containers.target rootfs/usr/lib/systemd/system/
 ```
