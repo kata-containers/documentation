@@ -2,6 +2,7 @@
 * [Assumptions](#assumptions)
 * [Build and install the Kata Containers runtime](#build-and-install-the-kata-containers-runtime)
     * [Check hardware requirements](#check-hardware-requirements)
+    * [Configure hypervisor](#configure-hypervisor)
     * [Configure to use initrd or rootfs image](#configure-to-use-initrd-or-rootfs-image)
     * [Enable full debug](#enable-full-debug)
 * [Build and install Kata proxy](#build-and-install-kata-proxy)
@@ -35,13 +36,30 @@ This document is written **specifically for developers**.
 - You already have the following installed:
   - [Docker](https://www.docker.com/).
   - [golang](https://golang.org/dl) version 1.8.3 or newer.
+
+     To view the versions of go known to work, see the `golang` entry in the
+     [versions database](https://github.com/kata-containers/runtime/blob/master/versions.yaml).
+
   - `make`.
   - `gcc` (required for building the shim and runtime).
+  - `qemu` version 2.11 or newer.
 
-- You have installed the Clear Containers `linux-container` and `qemu-lite`
-  packages containing the guest kernel images and hypervisor. These packages
-  are automatically installed when you install Clear Containers, but can be
-  installed separately as well:
+     Note that `qemu` version 2.10 may also work but will not perform as well
+     as `qemu` version 2.11 or newer.
+
+     If your distribution does not yet provide a new enough version of `qemu`,
+     you can install an optimised version of `qemu` called `qemu-lite`. This
+     package is installed automatically when you install Clear Containers, but can
+     be installed separately as well:
+
+       https://github.com/clearcontainers/runtime/wiki/Installation
+
+     However, note that the use of `qemu-lite` is deprecated in favour of
+     vanilla `qemu` 2.11.
+
+- You have installed the Clear Containers `linux-container` package containing
+  the guest kernel image. This package is installed automatically when you
+  install Clear Containers, but can be installed separately as well:
 
     https://github.com/clearcontainers/runtime/wiki/Installation
 
@@ -67,6 +85,16 @@ $ sudo kata-runtime kata-check
 ```
 
 If your system is *not* able to run Kata Containers, the previous command will error out and explain why.
+
+## Configure hypervisor
+
+Since the default hypervisor is now vanilla `qemu`, if you are using
+`qemu-lite`, update the configuration file to specify the correct hypervisor
+path:
+
+```
+$ sudo sed -i 's!path = "/usr/bin/qemu-system-!path = "/usr/bin/qemu-lite-system-!g' /usr/share/defaults/kata-containers/configuration.toml
+```
 
 ## Configure to use initrd or rootfs image
 
