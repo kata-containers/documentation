@@ -54,7 +54,8 @@ This document is written **specifically for developers**.
 ```
 $ go get -d -u github.com/kata-containers/runtime
 $ cd $GOPATH/src/github.com/kata-containers/runtime
-$ make && sudo -E PATH=$PATH make install
+$ export QEMUPATH=/usr/bin/qemu-lite-system-$(arch)
+$ make QEMUPATH="${QEMUPATH}" && sudo -E PATH=$PATH make install QEMUPATH="${QEMUPATH}"
 ```
 
 The build will create the following:
