@@ -35,6 +35,10 @@ This document is written **specifically for developers**.
 - You already have the following installed:
   - [Docker](https://www.docker.com/).
   - [golang](https://golang.org/dl) version 1.8.3 or newer.
+
+    To view the versions of go known to work, see the `golang` entry in the
+    [versions database](https://github.com/kata-containers/runtime/blob/master/versions.yaml).
+
   - `make`.
   - `gcc` (required for building the shim and runtime).
 
@@ -49,7 +53,8 @@ This document is written **specifically for developers**.
 ```
 $ go get -d -u github.com/kata-containers/runtime
 $ cd $GOPATH/src/github.com/kata-containers/runtime
-$ make && sudo -E PATH=$PATH make install
+$ export QEMUPATH=/usr/bin/qemu-lite-system-$(arch)
+$ make QEMUPATH="${QEMUPATH}" && sudo -E PATH=$PATH make install QEMUPATH="${QEMUPATH}"
 ```
 
 The build will create the following:
