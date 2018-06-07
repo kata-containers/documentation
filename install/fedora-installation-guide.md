@@ -33,8 +33,9 @@ $ sudo -E VERSION_ID=$VERSION_ID dnf config-manager --add-repo \
 http://download.opensuse.org/repositories/home:/katacontainers:/release/Fedora\_$VERSION_ID/home:katacontainers:release.repo
 $ sudo -E dnf -y install kata-runtime kata-proxy kata-shim
 ```
+3. Check [hardware requirements](https://github.com/kata-containers/runtime/#hardware-requirements)
 
-3. Configure Docker to use Kata Containers by default with the following commands:
+4. Configure Docker to use Kata Containers by default with the following commands:
 
 ```bash
 $ sudo mkdir -p /etc/systemd/system/docker.service.d/
@@ -45,7 +46,7 @@ ExecStart=/usr/bin/dockerd -D --add-runtime kata-runtime=/usr/bin/kata-runtime -
 EOF
 ```
 
-4. Restart the Docker systemd service with the following commands:
+5. Restart the Docker systemd service with the following commands:
 
 ```bash
 $ sudo systemctl daemon-reload
