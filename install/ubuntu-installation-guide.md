@@ -35,8 +35,9 @@ $ curl -sL  http://download.opensuse.org/repositories/home:/katacontainers:/rele
 $ sudo -E apt-get update
 $ sudo -E apt-get -y install kata-runtime kata-proxy kata-shim
 ```
+3. Check [hardware requirements](https://github.com/kata-containers/runtime/#hardware-requirements)
 
-3. Configure Docker to use Kata Containers by default with the following commands:
+4. Configure Docker to use Kata Containers by default with the following commands:
 
 ```bash
 $ sudo mkdir -p /etc/systemd/system/docker.service.d/
@@ -47,14 +48,14 @@ ExecStart=/usr/bin/dockerd -D --add-runtime kata-runtime=/usr/bin/kata-runtime -
 EOF
 ```
 
-4. Restart the Docker systemd service with the following commands:
+5. Restart the Docker systemd service with the following commands:
 
 ```bash
 $ sudo systemctl daemon-reload
 $ sudo systemctl restart docker
 ```
 
-5. Run Kata Containers
+6. Run Kata Containers
 
 You are now ready to run Kata Containers:
 
