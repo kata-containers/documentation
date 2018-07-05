@@ -2,6 +2,7 @@
 * [Assumptions](#assumptions)
 * [Initial setup](#initial-setup)
 * [Requirements to build individual components](#requirements-to-build-individual-components)
+* [Individual component compatibility](#individual-component-compatibility)
 * [Build and install the Kata Containers runtime](#build-and-install-the-kata-containers-runtime)
     * [Check hardware requirements](#check-hardware-requirements)
     * [Configure to use initrd or rootfs image](#configure-to-use-initrd-or-rootfs-image)
@@ -74,6 +75,22 @@ You need to install the following to build Kata Containers components:
 
 - `make`.
 - `gcc` (required for building the shim and runtime).
+
+# Individual component compatibility
+
+Using versions of individual components newer than the last official released
+version might result in
+[compatibility issues](Releases.md#component-version-compatibility).
+
+If you have only updated a subset of the Kata components and notice strange
+behavior, we recommend you update the remaining components to ensure you are
+using the latest versions of all of them. Also, remember to
+[create a new image containing the latest agent version](#create-and-install-rootfs-and-initrd-image).
+
+If you still have compatibility issues after following the previous
+instructions, refer to the
+[troubleshooting section](#troubleshoot-kata-containers) and
+[get in contact with us](https://github.com/kata-containers/community/blob/master/CONTRIBUTING.md#contact).
 
 # Build and install the Kata Containers runtime
 

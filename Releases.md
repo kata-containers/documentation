@@ -37,7 +37,10 @@ Semantic versioning is used since the version number is able to convey clear inf
 
 ## Components
 
-A new release will result in all Kata components being given a new [version](#versioning), even if no changes were made to that component since the last version. The version for a release is **identical** for all  components.
+A new release results in all Kata components being given a new
+[version](#versioning), even if there are no changes to that component since
+the last version. The version for a release is **identical** for all
+components.
 
 This strategy allows diagnostic tools such as `kata-runtime kata-env` to record full version details of all components to help with problem determination.
 
