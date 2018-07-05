@@ -1,6 +1,7 @@
 * [Introduction](#introduction)
 * [Versioning](#versioning)
 * [Components](#components)
+    * [Component version compatibility](#component-version-compatibility)
 * [Tagging repositories](#tagging-repositories)
 * [Release checklist](#release-checklist)
 * [Release process](#release-process)
@@ -41,6 +42,16 @@ A new release will result in all Kata components being given a new [version](#ve
 This strategy allows diagnostic tools such as `kata-runtime kata-env` to record full version details of all components to help with problem determination.
 
 Note that although hypervisor and guest kernel both have versions, these are not updated for new releases as they are not core components developed by the Kata community.
+
+### Component version compatibility
+
+Semantic versioning allows users to determine how a new version of a
+particular component relates to the previous version of that component.
+However, it is not possible to compare two *different* Kata component
+versions, even though all component versions are changed together.
+
+To ensure compatibility it is necessary to always use components of the same
+version.
 
 ## Tagging repositories
 
