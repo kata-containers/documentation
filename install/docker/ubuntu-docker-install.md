@@ -28,7 +28,9 @@
    For more information on installing Docker please refer to the
    [Docker Guide](https://docs.docker.com/engine/installation/linux/ubuntu).
 
-2. Configure Docker to use Kata Containers by default with the following commands:
+2. Configure Docker to use Kata Containers by default with one of the following methods:
+
+2.1 Using systemd
 
    ```bash
    $ sudo mkdir -p /etc/systemd/system/docker.service.d/
@@ -37,6 +39,18 @@
    ExecStart=
    ExecStart=/usr/bin/dockerd -D --add-runtime kata-runtime=/usr/bin/kata-runtime --default-runtime=kata-runtime
    EOF
+   ```
+
+2.2 Using Docker daemon.json
+
+   Add the following to your `/etc/docker/daemon.json`
+
+   ```
+   "runtimes": {
+    "kata-runtime": {
+      "path": "/usr/bin/kata-runtime"
+    }
+   }
    ```
 
 3. Restart the Docker systemd service with the following commands:
