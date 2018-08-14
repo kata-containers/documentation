@@ -17,12 +17,9 @@
 
 1. Install the Kata Containers components with the following commands:
 
-   > **Note:** This installation channel is not secure since the repository currently
-   > redirects download URLs to `http`.
-
    ```bash
    $ source /etc/os-release
-   $ sudo -E VERSION_ID=$VERSION_ID yum-config-manager --add-repo "http://download.opensuse.org/repositories/home:/katacontainers:/release/RHEL_${VERSION_ID}/home:katacontainers:release.repo"
+   $ sudo -E VERSION_ID=$VERSION_ID yum-config-manager --add-repo "https://download.opensuse.org/repositories/home:/katacontainers:/release/RHEL_${VERSION_ID}/home:katacontainers:release.repo"
    $ sudo -E yum -y install kata-runtime kata-proxy kata-shim
    ```
 
