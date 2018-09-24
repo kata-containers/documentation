@@ -1,7 +1,8 @@
 * [Introduction](#introduction)
 * [Versioning](#versioning)
-* [Tagging repositories](#tagging-repositories)
 * [Components](#components)
+    * [Component version compatibility](#component-version-compatibility)
+* [Tagging repositories](#tagging-repositories)
 * [Release checklist](#release-checklist)
 * [Release process](#release-process)
 
@@ -34,6 +35,27 @@ Semantic versioning is used since the version number is able to convey clear inf
 
   A major release will also likely require a change of the container manager version used, for example Docker\*. Please refer to the release notes for further details.
 
+## Components
+
+A new release results in all Kata components being given a new
+[version](#versioning), even if there are no changes to that component since
+the last version. The version for a release is **identical** for all
+components.
+
+This strategy allows diagnostic tools such as `kata-runtime kata-env` to record full version details of all components to help with problem determination.
+
+Note that although hypervisor and guest kernel both have versions, these are not updated for new releases as they are not core components developed by the Kata community.
+
+### Component version compatibility
+
+Semantic versioning allows users to determine how a new version of a
+particular component relates to the previous version of that component.
+However, it is not possible to compare two *different* Kata component
+versions, even though all component versions are changed together.
+
+To ensure compatibility it is necessary to always use components of the same
+version.
+
 ## Tagging repositories
 
 To create a signed and annotated tag for a repository, first ensure that `git(1)` is configured to use your `gpg(1)` key:
@@ -54,14 +76,6 @@ The annotation text must conform to the usual [patch format rules](https://githu
 
 - The subsystem must be "`release: $tag`".
 - The body of the message must contain details of changes in the release in `git-shortlog(1)` format.
-
-## Components
-
-A new release will result in all Kata components being given a new [version](#versioning), even if no changes were made to that component since the last version. The version for a release is **identical** for all  components.
-
-This strategy allows diagnostic tools such as `kata-runtime kata-env` to record full version details of all components to help with problem determination.
-
-Note that although hypervisor and guest kernel both have versions, these are not updated for new releases as they are not core components developed by the Kata community.
 
 ## Release checklist
 

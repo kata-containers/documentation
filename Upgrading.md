@@ -134,7 +134,8 @@ As shown in the
 [installation instructions](https://github.com/kata-containers/documentation/blob/master/install),
 Kata Containers provide binaries for popular distributions in their native
 packaging formats. This allows Kata Containers to be upgraded using the
-standard package management tools for your distribution.
+standard package management tools for your distribution and also guarantees
+[component version compatibility](Releases.md#component-version-compatibility).
 
 # Appendices
 
