@@ -1,6 +1,7 @@
-# Install Kata Containers on Ubuntu
+# Install Kata Containers on Ubuntu 
 
 1. Install the Kata Containers components with the following commands:
+ * Using debs
 
    ```bash
    $ ARCH=$(arch)
@@ -9,6 +10,10 @@
    $ sudo -E apt-get update
    $ sudo -E apt-get -y install kata-runtime kata-proxy kata-shim
    ```
+   
+ * Using snaps
+
+    Install Kata Containers using `snap install kata-containers --classic`.
 
 2. Decide which container manager to use and select the corresponding link that follows:
 
