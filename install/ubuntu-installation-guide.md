@@ -1,4 +1,4 @@
-# Install Kata Containers on Ubuntu 
+# Install Kata Containers on Ubuntu
 
 1. Install the Kata Containers components with the following commands:
  * Using debs
