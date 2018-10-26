@@ -6,7 +6,7 @@
    $ source /etc/os-release
    $ ARCH=$(arch)
    $ sudo dnf -y install dnf-plugins-core
-   $ sudo -E dnf config-manager --add-repo "http://download.opensuse.org/repositories/home:/katacontainers:/releases:/${ARCH}:/master/Fedora_${VERSION_ID}/home:katacontainers:releases:${ARCH}:master.repo"
+   $ sudo -E dnf config-manager --add-repo "https://download.opensuse.org/repositories/home:/katacontainers:/releases:/${ARCH}:/master/Fedora_${VERSION_ID}/home:katacontainers:releases:${ARCH}:master.repo"
    $ sudo -E dnf -y install kata-runtime kata-proxy kata-shim
    ```
 

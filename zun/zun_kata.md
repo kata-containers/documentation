@@ -53,7 +53,7 @@ zun delete test
 ## Install `kata-runtime`, `kata-shim`, and `kata-proxy`
 
 ```
-sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/katacontainers:/release/xUbuntu_$(lsb_release -rs)/ /' >> /etc/apt/sources.list.d/kata-containers.list"
+sudo sh -c "echo 'deb https://download.opensuse.org/repositories/home:/katacontainers:/release/xUbuntu_$(lsb_release -rs)/ /' >> /etc/apt/sources.list.d/kata-containers.list"
 curl -sL  https://download.opensuse.org/repositories/home:/katacontainers:/release/xUbuntu_$(lsb_release -rs)/Release.key | sudo apt-key add -
 sudo -E apt-get update
 sudo -E apt-get -y install kata-runtime kata-proxy kata-shim

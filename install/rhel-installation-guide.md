@@ -5,7 +5,7 @@
    ```bash
    $ source /etc/os-release
    $ ARCH=$(arch)
-   $ sudo -E yum-config-manager --add-repo "http://download.opensuse.org/repositories/home:/katacontainers:/releases:/${ARCH}:/master/RHEL_${VERSION_ID}/home:katacontainers:releases:${ARCH}:master.repo"
+   $ sudo -E yum-config-manager --add-repo "https://download.opensuse.org/repositories/home:/katacontainers:/releases:/${ARCH}:/master/RHEL_${VERSION_ID}/home:katacontainers:releases:${ARCH}:master.repo"
    $ sudo -E yum -y install kata-runtime kata-proxy kata-shim
    ```
 
