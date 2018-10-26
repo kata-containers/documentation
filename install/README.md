@@ -54,7 +54,7 @@ Manual installation instructions are available for [these distributions](#suppor
 >  first read [the upgrading document](../Upgrading.md).
 
 > **Notes on releases**:
-> - [This download server](http://download.opensuse.org/repositories/home:/katacontainers:/releases:/)
+> - [This download server](https://download.opensuse.org/repositories/home:/katacontainers:/releases:/)
 > hosts the Kata Containers packages built by OBS for all the supported architectures.
 > Packages are available for the latest and stable releases (more info [here](https://github.com/kata-containers/documentation/blob/master/Stable-Branch-Strategy.md)).
 >
@@ -62,7 +62,7 @@ Manual installation instructions are available for [these distributions](#suppor
 > (a.k.a. `master` release).
 >
 > - When choosing a stable release, replace all `master` occurrences in the URLs
-> with a `stable-x.y` version available on the [download server](http://download.opensuse.org/repositories/home:/katacontainers:/releases:/).
+> with a `stable-x.y` version available on the [download server](https://download.opensuse.org/repositories/home:/katacontainers:/releases:/).
 
 > **Notes on packages source verification**:
 > - The Kata packages hosted on the download server are signed with GPG to ensure integrity and authenticity.
