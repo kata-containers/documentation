@@ -12,9 +12,10 @@
         * [Adding networks dynamically](#adding-networks-dynamically)
         * [Docker swarm support](#docker-swarm-support)
     * [Resource management](#resource-management)
-        * [docker run and kernel memory](#docker-run-and-kernel-memory)
         * [docker run and shared memory](#docker-run-and-shared-memory)
         * [docker run and sysctl](#docker-run-and-sysctl)
+    * [Docker daemon features](#docker-daemon-features)
+        * [selinux support](#selinux-support)
 * [Architectural limitations](#architectural-limitations)
     * [Networking limitations](#networking-limitations)
         * [Support for joining an existing VM network](#support-for-joining-an-existing-vm-network)
@@ -23,7 +24,7 @@
     * [Host resource sharing](#host-resource-sharing)
         * [docker run --privileged](#docker-run---privileged)
 * [Miscellaneous](#miscellaneous)
-    * [Docker ramdisk not supported](#docker-ramdisk-not-supported)
+    * [Docker --security-opt partially supported](#docker---security-opt-option-partially-supported)
 * [Appendices](#appendices)
     * [The constraints challenge](#the-constraints-challenge)
 
@@ -108,42 +109,12 @@ Note that the OCI standard does not specify an `events` command.
 
 See issue https://github.com/kata-containers/runtime/issues/308 and https://github.com/kata-containers/runtime/issues/309 for more information.
 
-### ps command
-
-The Kata Containers runtime does not currently support the `ps` command.
-
-Note that this is *not* the same as the `docker ps` command. The runtime `ps`
-command lists the processes running within a container. The `docker ps`
-command lists the containers themselves. The runtime `ps` command is
-invoked from `docker top`.
-
-Note that the OCI standard does not specify a `ps` command.
-
-See issue https://github.com/kata-containers/runtime/issues/129 for more information.
-
 ### update command
 
-The runtime does not currently implement the update command, hence
-does not support some of the `docker update` functionality. Much of the
-`update` functionality is based around cgroup configurations.
-
-It might be possible to implement some of the update functionality by adjusting cgroups either around the VM or inside the container VM, or by some other VM functional equivalent. See [the constraints challenge](#the-constraints-challenge) section for further information on how to handle constraints.
-
-Note that the OCI standard does not specify an `update` command.
-
-See issue https://github.com/kata-containers/runtime/issues/189 for more information.
+Currently, only block I/O weight is not supported.
+All other configurations are supported and are working properly.
 
 ## Networking
-
-### Adding networks dynamically
-
-The runtime does not currently support adding networks to an already
-running container (`docker network connect`).
-
-The VM network configuration is set up with what is defined by the CNM
-plugin at startup time. Although it is possible to watch the networking namespace on the host to discover and propagate new networks at runtime, it is currently not implemented.
-
-See https://github.com/kata-containers/runtime/issues/113 for more information.
 
 ### Docker swarm support
 
@@ -169,14 +140,6 @@ See issue https://github.com/clearcontainers/runtime/issues/341 and [the constra
 For CPUs resource management see
 [cpu-constraints](constraints/cpu.md).
 
-### docker run and kernel memory
-
-The `docker run --kernel-memory=` option is not currently implemented.
-It should be possible to pass this information through to the QEMU
-command line CPU configuration options to gain a similar effect.
-
-See issue https://github.com/kata-containers/runtime/issues/187 for more information.
-
 ### docker run and shared memory
 
 The runtime does not implement the `docker run --shm-size` command to
@@ -191,6 +154,23 @@ level, this equates to the `linux.sysctl` OCI configuration. Docker
 allows configuring the sysctl settings that support namespacing. From a security and isolation point of view, it might make sense to set them in the VM, which isolates sysctl settings. Also, given that each Kata Container has its own kernel, we can support setting of sysctl settings that are not namespaced. In some cases, we might need to support configuring some of the settings on both the host side Kata Container namespace and the Kata Containers kernel.
 
 See issue https://github.com/kata-containers/runtime/issues/185 for more information.
+
+## Docker daemon features
+
+Some features enabled or implemented via the
+[dockerd daemon](https://docs.docker.com/config/daemon/) configuration are not yet
+implemented.
+
+### selinux support
+
+The `dockerd` configuration option `"selinux-enabled": true` is not presently implemented
+in Kata Containers. Enabling this option causes an OCI runtime error.
+
+See issue https://github.com/kata-containers/runtime/issues/784 for more information.
+
+The consequence of this is that the [Docker --security-opt is only partially supported](#docker---security-opt-option-partially-supported).
+
+Kubernetes [selinux labels](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#assign-selinux-labels-to-a-container) will also not be applied.
 
 # Architectural limitations
 
@@ -249,13 +229,13 @@ The `--privileged` option can be used with `runc` containers and inter-mixed wit
 
 This section lists limitations where the possible solutions are uncertain.
 
-## Docker ramdisk not supported
+## Docker --security-opt option partially supported
 
-The `DOCKER_RAMDISK=true` environment variable used by Docker to force the
-container to run entirely on a RAM disk is not supported.
+The `--security-opt=` option used by Docker is partially supported.
+We only support `--security-opt=no-new-privileges` and `--security-opt seccomp=/path/to/seccomp/profile.json`
+option as of today.
 
-See https://github.com/kata-containers/runtime/issues/134 for more information.
-
+Note: The `--security-opt apparmor=your_profile` is not yet supported. See https://github.com/kata-containers/runtime/issues/707.
 # Appendices
 
 ## The constraints challenge

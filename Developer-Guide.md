@@ -24,16 +24,19 @@
         * [Build an initrd image](#build-an-initrd-image)
         * [Install the initrd image](#install-the-initrd-image)
 * [Install guest kernel images](#install-guest-kernel-images)
+* [Install a hypervisor](#install-a-hypervisor)
+    * [Build a custom QEMU](#build-a-custom-qemu)
+        * [Build a custom QEMU for aarch64/arm64 - REQUIRED](#Build-a-custom-qemu-for-aarch64/arm64---required)
 * [Run Kata Containers with Docker](#run-kata-containers-with-docker)
     * [Update Docker configuration](#update-docker-configuration)
     * [Create a container using Kata](#create-a-container-using-kata)
 * [Run Kata Containers with Kubernetes](#run-kata-containers-with-kubernetes)
     * [Install a CRI implementation](#install-a-cri-implementation)
         * [CRI-O](#cri-o)
-        * [CRI-containerd](#cri-containerd)
+        * [containerd with cri plugin](#containerd-with-cri-plugin)
     * [Install Kubernetes](#install-kubernetes)
         * [Configure for CRI-O](#configure-for-cri-o)
-        * [Configure for CRI-containerd](#configure-for-cri-containerd)
+        * [Configure for containerd](#configure-for-containerd)
     * [Run a Kubernetes pod with Kata Containers](#run-a-kubernetes-pod-with-kata-containers)
 * [Troubleshoot Kata Containers](#troubleshoot-kata-containers)
 * [Appendices](#appendices)
@@ -73,7 +76,7 @@ guest kernel.
 
 You need to install the following to build Kata Containers components:
 
-- [golang](https://golang.org/dl) version 1.8.3 or newer.
+- [golang](https://golang.org/dl)
 
   To view the versions of go known to work, see the `golang` entry in the
   [versions database](https://github.com/kata-containers/runtime/blob/master/versions.yaml).
@@ -228,9 +231,9 @@ the following example.
 $ export ROOTFS_DIR=${GOPATH}/src/github.com/kata-containers/osbuilder/rootfs-builder/rootfs
 $ sudo rm -rf ${ROOTFS_DIR}
 $ cd $GOPATH/src/github.com/kata-containers/osbuilder/rootfs-builder
-$ script -fec 'sudo -E GOPATH=$GOPATH USE_DOCKER=true ./rootfs.sh ${distro}'
+$ script -fec 'sudo -E GOPATH=$GOPATH USE_DOCKER=true SECCOMP=no ./rootfs.sh ${distro}'
 ```
-You MUST choose one of `alpine`, `centos`, `clearlinux`, `euleros`, and `fedora` for `${distro}`.
+You MUST choose one of `alpine`, `centos`, `clearlinux`, `euleros`, and `fedora` for `${distro}`. By default `seccomp` packages are not included in the rootfs image. Set `SECCOMP` to `yes` to include them.
 
 > **Note:**
 >
@@ -259,7 +262,7 @@ $ script -fec 'sudo -E USE_DOCKER=true ./image_builder.sh ${ROOTFS_DIR}'
 ```
 
 > **Notes:**
-> 
+>
 > - You must ensure that the *default Docker runtime* is `runc` to make use of
 >   the `USE_DOCKER` variable. If that is not the case, remove the variable
 >   from the previous command. See [Checking Docker default runtime](#checking-docker-default-runtime).
@@ -284,10 +287,10 @@ $ (cd /usr/share/kata-containers && sudo ln -sf "$image" kata-containers.img)
 $ export ROOTFS_DIR="${GOPATH}/src/github.com/kata-containers/osbuilder/rootfs-builder/rootfs"
 $ sudo rm -rf ${ROOTFS_DIR}
 $ cd $GOPATH/src/github.com/kata-containers/osbuilder/rootfs-builder
-$ script -fec 'sudo -E GOPATH=$GOPATH AGENT_INIT=yes USE_DOCKER=true ./rootfs.sh ${distro}'
+$ script -fec 'sudo -E GOPATH=$GOPATH AGENT_INIT=yes USE_DOCKER=true SECCOMP=no ./rootfs.sh ${distro}'
 ```
 `AGENT_INIT` controls if the guest image uses kata agent as the guest `init` process. When you create an initrd image,
-always set `AGENT_INIT` to `yes`.
+always set `AGENT_INIT` to `yes`. By default `seccomp` packages are not included in the initrd image. Set `SECCOMP` to `yes` to include them.
 
 You MUST choose one of `alpine`, `centos`, `clearlinux`, `euleros`, and `fedora` for `${distro}`.
 
@@ -338,10 +341,12 @@ $ tar -xf ${kernel_tar_file}
 $ mv .config "linux-${kernel_version}"
 $ pushd "linux-${kernel_version}"
 $ curl -L https://raw.githubusercontent.com/kata-containers/packaging/master/kernel/patches/0001-NO-UPSTREAM-9P-always-use-cached-inode-to-fill-in-v9.patch | patch -p1
+$ curl -L https://raw.githubusercontent.com/kata-containers/packaging/master/kernel/patches/0002-Compile-in-evged-always.patch | patch -p1
 $ make ARCH=${kernel_dir} -j$(nproc)
 $ kata_kernel_dir="/usr/share/kata-containers"
 $ kata_vmlinuz="${kata_kernel_dir}/kata-vmlinuz-${kernel_version}.container"
-$ [ $kernel_arch = ppc64le ] && kernel_file="$(realpath ./vmlinux)" || kernel_file="$(realpath arch/${kernel_arch}/boot/bzImage)"
+$ case $kernel_arch in ppc64le) kernel_path="./vmlinux";; aarch64) kernel_path="arch/arm64/boot/Image";; *) kernel_path="arch/${kernel_arch}/boot/bzImage";; esac
+$ kernel_file="$(realpath $kernel_path)"
 $ sudo install -o root -g root -m 0755 -D "${kernel_file}" "${kata_vmlinuz}"
 $ sudo ln -sf "${kata_vmlinuz}" "${kata_kernel_dir}/vmlinuz.container"
 $ kata_vmlinux="${kata_kernel_dir}/kata-vmlinux-${kernel_version}"
@@ -352,16 +357,45 @@ $ popd
 $ rm -rf "${tmpdir}"
 ```
 
-# Run Kata Containers with Docker
+# Install a hypervisor
 
-## Update Docker configuration
+When setting up Kata using a [packaged installation method](https://github.com/kata-containers/documentation/tree/master/install#installing-on-a-linux-system), the `qemu-lite` hypervisor is installed automatically. For other installation methods, you will need to manually install a suitable hypervisor.
+
+## Build a custom QEMU
+
+To build a version of QEMU using the same options as the default `qemu-lite` version , you could use the `configure-hypervisor.sh` script:
 
 ```
-$ dir=/etc/systemd/system/docker.service.d
-$ file="$dir/kata-containers.conf"
-$ sudo mkdir -p "$dir"
-$ sudo test -e "$file" || echo -e "[Service]\nType=simple\nExecStart=\nExecStart=/usr/bin/dockerd -D --default-runtime runc" | sudo tee "$file"
-$ sudo grep -q "kata-runtime=" $file || sudo sed -i 's!^\(ExecStart=[^$].*$\)!\1 --add-runtime kata-runtime=/usr/local/bin/kata-runtime!g' "$file"
+$ go get -d github.com/kata-containers/packaging
+$ cd $your_qemu_directory
+$ ${GOPATH}/src/github.com/kata-containers/packaging/scripts/configure-hypervisor.sh qemu > kata.cfg
+$ eval ./configure "$(cat kata.cfg)"
+$ make -j $(nproc)
+$ sudo -E make install
+```
+
+### Build a custom QEMU for aarch64/arm64 - REQUIRED
+> **Note:**
+>
+> - You should only do this step if you are on aarch64/arm64.
+> - You should include [Eric Auger's latest PCDIMM/NVDIMM patches](https://patchwork.kernel.org/cover/10647305/) which are
+>   under upstream review for supporting nvdimm on aarch64.
+>
+You could build the custom `qemu-system-aarch64` as required with the following command:
+```
+$ go get -d github.com/kata-containers/tests
+$ script -fec 'sudo -E ${GOPATH}/src/github.com/kata-containers/tests/.ci/install_qemu.sh'
+```
+
+# Run Kata Containers with Docker
+
+## Update the Docker systemd unit file
+
+```
+$ dockerUnit=$(systemctl show -p FragmentPath docker.service | cut -d "=" -f 2)
+$ unitFile=${dockerUnit:-/etc/systemd/system/docker.service.d/kata-containers.conf}
+$ test -e "$unitFile" || { sudo mkdir -p "$(dirname $unitFile)"; echo -e "[Service]\nType=simple\nExecStart=\nExecStart=/usr/bin/dockerd -D --default-runtime runc" | sudo tee "$unitFile"; }
+$ grep -q "kata-runtime=" $unitFile || sudo sed -i 's!^\(ExecStart=[^$].*$\)!\1 --add-runtime kata-runtime=/usr/local/bin/kata-runtime!g' "$unitFile"
 $ sudo systemctl daemon-reload
 $ sudo systemctl restart docker
 ```
@@ -387,6 +421,10 @@ called [CRI-O](https://github.com/kubernetes-incubator/cri-o) and
 choose the one that you want, but you have to pick one. After choosing
 either CRI-O or CRI-containerd, you must make the appropriate changes
 to ensure it relies on the Kata Containers runtime.
+
+As of Kata Containers 1.5, using `shimv2` with containerd 1.2.0 or above is the preferred
+way to run Kata Containers with Kubernetes ([see the howto](https://github.com/kata-containers/documentation/blob/master/how-to/how-to-use-k8s-with-cri-containerd-and-kata.md#configure-containerd-to-use-kata-containers)).
+The CRI-O will catch up soon.
 
 ### CRI-O
 
@@ -452,13 +490,13 @@ Restart CRI-O to take changes into account
 $ sudo systemctl restart crio
 ```
 
-### CRI-containerd
+### containerd with cri plugin
 
-If you select CRI-containerd, follow the "Getting Started for Developers"
+If you select containerd with `cri` plugin, follow the "Getting Started for Developers"
 instructions [here](https://github.com/containerd/cri#getting-started-for-developers)
 to properly install it.
 
-To customize CRI-containerd to select Kata Containers runtime, follow our
+To customize containerd to select Kata Containers runtime, follow our
 "Configure containerd to use Kata Containers" internal documentation
 [here](https://github.com/kata-containers/documentation/blob/master/how-to/how-to-use-k8s-with-cri-containerd-and-kata.md#configure-containerd-to-use-kata-containers).
 
@@ -477,18 +515,18 @@ implementation you chose, and the kubelet service has to be updated accordingly.
 
 `/etc/systemd/system/kubelet.service.d/0-crio.conf`
 ```
-[Service]                                                 
+[Service]
 Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///var/run/crio/crio.sock"
 ```
 
-### Configure for CRI-containerd
+### Configure for containerd
 
 `/etc/systemd/system/kubelet.service.d/0-cri-containerd.conf`
 ```
-[Service]                                                 
+[Service]
 Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"
 ```
-For more information about CRI-containerd see the "Configure Kubelet to use containerd"
+For more information about containerd see the "Configure Kubelet to use containerd"
 documentation [here](https://github.com/kata-containers/documentation/blob/master/how-to/how-to-use-k8s-with-cri-containerd-and-kata.md#configure-kubelet-to-use-containerd).
 
 ## Run a Kubernetes pod with Kata Containers
@@ -522,8 +560,8 @@ metadata:
     io.kubernetes.cri.untrusted-workload: "true"
 spec:
   containers:
-    name: nginx
-    image: nginx
+    - name: nginx
+      image: nginx
 ```
 
 Next, you run your pod:
