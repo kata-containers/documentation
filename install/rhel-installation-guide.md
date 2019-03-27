@@ -1,18 +1,11 @@
 # Install Kata Containers on RHEL
 
-> **Warning:**
->
-> - The RHEL packages are provided as a convenience to users until native
->   packages are available in RHEL. However, they are **NOT** currently tested
->   (although CentOS is) so caution should be exercised.
->
->   See https://github.com/kata-containers/ci/issues/3 for further details.
-
 1. Install the Kata Containers components with the following commands:
 
    ```bash
    $ source /etc/os-release
    $ ARCH=$(arch)
+   $ VERSION_ID=$(echo $VERSION_ID|cut -d\. -f1)
    $ sudo -E yum-config-manager --add-repo "http://download.opensuse.org/repositories/home:/katacontainers:/releases:/${ARCH}:/master/RHEL_${VERSION_ID}/home:katacontainers:releases:${ARCH}:master.repo"
    $ sudo -E yum -y install kata-runtime kata-proxy kata-shim
    ```
