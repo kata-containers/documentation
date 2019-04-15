@@ -72,6 +72,68 @@ and CRI-O.
 
 #### In Docker
 
+We use a smple container:  ```sudo docker run --cpus=2 --runtime=kata-qemu -it alpine sh```
+
+For the example below, the containerID is `3cca57349adcfb17f917d2312b568faa85515e6d5a8327a30ea8e5ecd47b0e1f`.
+
+The vCPU threads associated with the container are constrained in a cgroup created by Kata within the
+Docker directory, with a name that matches the containerID. We see three vCPU threads running within this cgroup,
+while the remaining sit within the `docker.service` `system.slice`:
+
+```
+$ for c in `ps -aeT | grep qem | cut -c 9-14 `; do grep -ir $c . | grep task ; done
+./system.slice/docker.service/tasks:82005
+./system.slice/docker.service/tasks:82006
+./docker/3cca57349adcfb17f917d2312b568faa85515e6d5a8327a30ea8e5ecd47b0e1f/tasks:82009
+./docker/3cca57349adcfb17f917d2312b568faa85515e6d5a8327a30ea8e5ecd47b0e1f/tasks:82076
+./docker/3cca57349adcfb17f917d2312b568faa85515e6d5a8327a30ea8e5ecd47b0e1f/tasks:82077
+```
+
+
+Similarly, the shim and vhost threads sit within `docker.service` `system.slice`.
+
+```bash
+$ grep -r `ps -ae|grep kata-proxy  | cut -c -6` . | grep task
+./system.slice/docker.service/tasks:82011
+$ grep -r `ps -ae|grep vhost  | cut -c -6` . | grep task
+./system.slice/docker.service/tasks:82008
+```
+
+```bash
+$ grep -r `ps -ae|grep kata-shim  | cut -c -6` . | grep task
+./docker/3cca57349adcfb17f917d2312b568faa85515e6d5a8327a30ea8e5ecd47b0e1f/tasks:82085
+```
+
+The docker system.slice is unconstrained.  The created cgroup is constraind based on the workload
+definition (2 CPUs).
+
+```bash
+/sys/fs/cgroup/cpu,cpuacct/docker$ cat cpu.shares cpu.cfs_quota_us 
+1024
+-1
+```
+
+```bash
+/sys/fs/cgroup/cpu,cpuacct/docker$ cat */cpu.shares */cpu.cfs_quota_us
+1024
+200000
+```
+
+This is interesting, given that there are three vCPUS (one default, plus two requested
+CPUs). Since today *only* the vCPU and the kata-shim are within the container's cgroup,
+this is adecquate.  The remaining threads (vhost, kata-proxy, QEMU itself) run unconstrained
+on the host.
+
+All processes are left unconstrained for memory.
+```
+/sys/fs/cgroup/memory/docker$ cat */memory.limit_in_bytes
+9223372036854771712
+/sys/fs/cgroup/memory/docker$ cat memory.limit_in_bytes 
+9223372036854771712
+```
+
+#####
+
 #### In Kubernetes + Containerd
 
 For each container in the pod, a cgroup is created within the pod cgroup (ie, under `/sys/fs/cgroup/*/kubepod/pod.*/`
@@ -154,8 +216,8 @@ system.slice/containerd.service/tasks:24010
 
 CRI-O is very similar the containerd, except for where the non-constrained processes end up. Instead
 of being called by CRIO directly, kata-runtime is called from a process `conmon`, which is located
-in a cgroup under the pod-cgroup. As expected based on prior exapmles, cgroups are ceated for each
-container, and the QEMU vCPU threads are placed within the pause containers cgroup.
+in a cgroup under the pod-cgroup. As expected based on prior examples, cgroups are created for each
+container, and the QEMU vCPU threads are placed within the pause container's cgroup.
 
 ```bash
 pod1cc61d33-5ca1-11e9-90bc-525400cfa589/crio-1b05886a39901ef3a7555796d38dcfaafd8fda929aef223ea576324a4949f9ef/tasks
@@ -287,7 +349,7 @@ node stability, as the `pod` is essentially unbounded.
 ### Summary
  * Pause cgroup cpu shaes should be setup correctly.
  * Do not create container cgroups on the host. Instead, create a pod sandbox group that is entirely managed by Kata
- * Move the QEMU threads into the sandbox cgroup
+ * Move all of the Kata threads (vCPU, shimv2, kata-shim, kata-proxy, vhost, etc), not just vCPU threads,  into the sandbox cgroup
 
 With these changes, performance and constraints for a pod is consistent. This constraining change will be
 more restrictive relative to existing design.
@@ -309,7 +371,9 @@ for more details.
 
 ### Only constrain vCPUs, leaving remaining threads for system reserved
 
-This will, in some cases, provide improved performance.
+This will, in some cases, provide improved performance. Utilizing system reserved does not scale, though.
+If the QEMU main thread and IO threads are placed here, unexpected failures could occur on a loaded system
+with enforaced constraints.
 
 ## Opens
 
