@@ -1,4 +1,4 @@
-* [Warning](#warning)
+* [Hint](#Hint)
 * [Assumptions](#assumptions)
 * [Initial setup](#initial-setup)
 * [Requirements to build individual components](#requirements-to-build-individual-components)
@@ -54,7 +54,7 @@
         * [Create an OCI bundle](#create-an-oci-bundle)
         * [Launch the runtime to create a container](#launch-the-runtime-to-create-a-container)
 
-# Warning
+# Hint
 
 This document is written **specifically for developers**: it is not intended for end users.
 
