@@ -2,11 +2,12 @@
 
 - [Install the SR-IOV Docker\* plugin](#install-the-sr-iov-docker-plugin)
 - [Host setup for SR-IOV](#host-setup-for-sr-iov)
-	- [Checking your NIC for SR-IOV](#checking-your-nic-for-sr-iov)
-	- [IOMMU Groups and PCIe Access Control Services](#iommu-groups-and-pcie-access-control-services)
-	- [Update the host kernel](#update-the-host-kernel)
+    - [Checking your NIC for SR-IOV](#checking-your-nic-for-sr-iov)
+    - [IOMMU Groups and PCIe Access Control Services](#iommu-groups-and-pcie-access-control-services)
+    - [Update the host kernel](#update-the-host-kernel)
 - [Set up the SR-IOV Device](#set-up-the-sr-iov-device)
-- [Example: Launch a Kata Containers container using SR-IOV](#example-launch-a-kata-containers-container-using-sr-iov)
+- [Example 1: Launch a Kata container using SR-IOV](#example-1-launch-a-kata-container-using-sr-iov-with-sr-iov-plugin)
+- [Example 2: Launch a Kata container using SR-IOV](#example-2-launch-a-kata-container-using-sr-iov-without-sr-iov-plugin)
 
 Single Root I/O Virtualization (SR-IOV) enables splitting a physical device into
 virtual functions (VFs). Virtual functions enable direct passthrough to virtual
@@ -276,7 +277,7 @@ set the number of VFs for a physical device just once.
    address is consistent on the host and when passed to the guest. Verify a MAC
    address is assigned to the VF using command `ip link show dev <vf>`.
 
-## Example: Launch a Kata Containers container using SR-IOV
+## Example 1: Launch a Kata container using SR-IOV with SR-IOV Plugin
 
 The following example launches a Kata Containers container using SR-IOV:
 
@@ -315,4 +316,34 @@ The following example launches a Kata Containers container using SR-IOV:
    Machine 2:
    ```
    sriov-2:~$ sudo docker run --runtime=kata-runtime --net=vfnet --cap-add SYS_ADMIN --ip=192.168.0.11 -it mcastelino/iperf iperf3 -c 192.168.0.10 bash -c "mount -t ramfs -o size=20M ramfs /tmp; iperf3 -c 192.168.0.10"
+   ```
+## Example 2: Launch a Kata container using SR-IOV without SR-IOV Plugin
+
+The second example launches a Kata container using SR-IOV, however does not need an additional plugin.
+A self-built guest kernel, which includes the appropriate NIC driver kernel module, might be necessary.
+
+1. Get PCI address of VF in form "0000:xx:xx.x":
+   ```sh
+   $ PCI=<PCI address of VF>
+   ```
+2. Get IOMMU group of VF (should be a number):
+   ```sh
+   $ GROUP=$(readlink -e /sys/bus/pci/devices/$PCI/iommu_group | sed "s/.*\///")
+   ```
+
+3. Unbind VF from current network driver (driver name might be different):
+   ```sh
+   $ echo "$PCI" | sudo tee /sys/bus/pci/drivers/i40e/unbind
+   ```
+
+4. Bind VF to `vfio-pci` driver:
+   ```sh
+   $ echo "vfio-pci" | sudo tee /sys/bus/pci/devices/$PCI/driver_override
+   $ echo "$PCI" | sudo tee /sys/bus/pci/drivers/vfio-pci/bind
+   ```
+
+5. Hand `vfio-pci` device handle to container:
+   ```sh
+   $ sudo docker run --runtime=kata-runtime --cap-add NET_ADMIN --cap-add SYS_ADMIN -device /dev/vfio/$GROUP -v /dev:/dev ...
+
    ```
