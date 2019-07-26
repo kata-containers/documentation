@@ -34,6 +34,7 @@ to see if your system is capable of running Kata Containers.
 | [Using official distro packages](#official-packages) |Kata packages provided by Linux distributions official repositories                      |[see table](#supported-distributions) |
 | [Scripted](#scripted-installation)                   |Generates an installation script which will result in a working system when executed     |[see table](#supported-distributions) |
 | [Manual](#manual-installation)                       |Allows the user to read a brief document and execute the specified commands step-by-step |[see table](#supported-distributions) |
+| [Static](#static-installation)                       |Cloud provisioning and quick evaluation. Not recommended for normal users.               |[see table](#supported-distributions) |
 
 ### Supported Distributions
 
@@ -70,6 +71,10 @@ Kata packages are provided by official distribution repositories for:
 
 ### Scripted Installation
 [Use `kata-doc-to-script`](installing-with-kata-doc-to-script.md) to generate installation scripts that can be reviewed before they are executed.
+
+### Static Installation
+
+See the [static installation guide](installing-kata-static-binaries.md).
 
 ### Manual Installation
 Manual installation instructions are available for [these distributions](#supported-distributions) and document how to:

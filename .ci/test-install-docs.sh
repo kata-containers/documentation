@@ -162,6 +162,7 @@ test_distro_install_guide()
 #
 # - kata-manager ("Automatic" method).
 # - kata-doc-to-script ("Scripted" method).
+# - "Static" method.
 #
 # Testing these is awkward because we need to "execute" the documents
 # describing those install methods, but since those install methods should
@@ -178,6 +179,7 @@ test_alternative_install_methods()
 	local -a files
 	files+=("installing-with-kata-manager.md")
 	files+=("installing-with-kata-doc-to-script.md")
+	files+=("installing-kata-static-binaries.md")
 
 	local tmp_dir
 
