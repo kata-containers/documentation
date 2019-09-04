@@ -22,3 +22,4 @@
 - [What Is VMCache and How To Enable It](what-is-vm-cache-and-how-do-I-use-it.md)
 - [What Is VM Templating and How To Enable It](what-is-vm-templating-and-how-do-I-use-it.md)
 - [Privileged Kata Containers](privileged.md)
+- [Rootless Kata Containers](how-to-use-rootless-kata-containers-with-podman.md)
