@@ -36,7 +36,8 @@
        EOF
        ```
 
-   2. Docker `daemon.json` If you are using Server Version: 18.09.0 > this ignore this step.
+   2. Docker `daemon.json` 
+      *If you are using Server Version: 18.09.0 > ignore this step.*
 
        Add the following definitions to `/etc/docker/daemon.json`:
 
