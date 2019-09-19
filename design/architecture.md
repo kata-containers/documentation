@@ -218,6 +218,7 @@ The `kata-agent` makes use of [`libcontainer`](https://github.com/opencontainers
 to manage the lifecycle of the container. This way the `kata-agent` reuses most
 of the code used by [`runc`](https://github.com/opencontainers/runc).
 
+![Kata agent internal](arch-images/kata-agent.png)
 ### Agent gRPC protocol
 
 placeholder
