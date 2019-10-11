@@ -87,7 +87,6 @@ $ sudo usermod -a -G kvm $USER
 
 ### Reboot
 
-
 Reboot the system for the changes to take effect (when you disable SELinux you
 must reboot, while logging out and back in is enough to have that user joining
 the `kvm` group).
