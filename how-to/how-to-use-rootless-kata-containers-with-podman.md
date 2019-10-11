@@ -62,6 +62,10 @@ them for rootless execution.
 
 ### Disable SELinux
 
+> **Warning:**
+>
+> You should understand the security implications before disabling SELinux.
+
 If SELinux is installed and enabled, it needs to be disabled with the
 following command (Kata Containers
 [does not support SELinux](https://github.com/kata-containers/documentation/blob/master/Limitations.md#selinux-support)).
