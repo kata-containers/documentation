@@ -4,19 +4,17 @@
     * [Requirements](#requirements)
     * [Installation](#installation)
     * [Configuration](#configuration)
-            * [1. Disable SELinux](#1-disable-selinux)
-            * [2. Add user to KVM group](#2-add-user-to-kvm-group)
-            * [3. Reboot](#3-reboot)
-            * [5. Disable `vhost-net`](#5-disable-vhost-net)
-            * [6. Modify the Kata images permissions](#6-modify-the-kata-images-permissions)
-            * [7. Set up Podman rootless configuration](#7-set-up-podman-rootless-configuration)
-            * [8. Add Kata Runtime to Podman configuration file (optional)](#8-add-kata-runtime-to-podman-configuration-file-optional)
-            * [9. Set Kata runtime as Podman's default OCI runtime (optional)](#9-set-kata-runtime-as-podmans-default-oci-runtime-optional)
+        * [Disable SELinux](#disable-selinux)
+        * [Add user to KVM group](#add-user-to-kvm-group)
+        * [Reboot](#reboot)
+        * [Disable `vhost-net`](#disable-vhost-net)
+        * [Modify the Kata images permissions](#modify-the-kata-images-permissions)
+        * [Set up Podman rootless configuration](#set-up-podman-rootless-configuration)
+        * [Add Kata Runtime to Podman configuration file (optional)](#add-kata-runtime-to-podman-configuration-file-optional)
     * [Run Kata with rootless Podman](#run-kata-with-rootless-podman)
     * [Appendix: Possible Errors](#appendix-possible-errors)
         * [Error caused by agent or runtime version mismatch](#error-caused-by-agent-or-runtime-version-mismatch)
         * [Missing registry file](#missing-registry-file)
-
 
 For an even more secure system, [Kata Containers](https://Katacontainers.io)
 can run workloads without a privileged user. Using
@@ -30,7 +28,7 @@ user-space networking.
   [supported distributions](https://github.com/kata-containers/documentation/blob/master/install/README.md#supported-distributions)
   for an updated list.
 
-  - If using CentOS 7, `newuidmap` and `newgidmap` do not exist, and can be installed with:
+  - If using CentOS 7, `newuidmap` and `newgidmap` do not exist. Install them with:
 
     ```bash
     $ (git clone https://github.com/shadow-maint/shadow; cd shadow; ./autogen.sh --prefix=/usr --enable-man; make && sudo make -C src install)
@@ -59,8 +57,8 @@ and the installation instructions:
 
 ## Configuration
 
-Now that Kata Containers and Podman have been installed, they need to be
-configured for rootless execution.
+Now that you have installed Kata Containers and Podman, you need to configure
+them for rootless execution.
 
 ### Disable SELinux
 
@@ -69,7 +67,7 @@ following command (Kata Containers
 [does not support SELinux](https://github.com/kata-containers/documentation/blob/master/Limitations.md#selinux-support)).
 
 > **Warning:**
-> The following command may differ depending on the distro being used:
+> The following command might differ depending on the distro you use:
 
 ```bash
 $ [ -f /etc/selinux/config ] && sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
@@ -77,7 +75,7 @@ $ [ -f /etc/selinux/config ] && sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /
 
 ### Add user to KVM group
 
-If running a KVM based hypervisor, the user running the workload needs to be added to the KVM group:
+If running a KVM based hypervisor, add the user running the workload to the KVM group:
 
 ```bash
 $ sudo usermod -a -G kvm $USER
@@ -85,23 +83,25 @@ $ sudo usermod -a -G kvm $USER
 
 ### Reboot
 
-Reboot the system for the changes to take effect (a reboot is required when
-disabling SELinux, while logging out and back in is enough to have that user
-joining the `KVM` group).
 
-You can now verify if the configuration is correct:
+Reboot the system for the changes to take effect (when you disable SELinux you
+must reboot, while logging out and back in is enough to have that user joining
+the `kvm` group).
 
-* (if installed) SELinux should have been disabled:
-```bash
-$ getenforce
-Disabled
-```
+Verify the configuration is correct:
 
-* The user should be in the `kvm` group:
-```
-$ groups | grep -ow kvm
-kvm
-```
+- If installed, disable SELinux:
+  ```bash
+  $ getenforce
+  Disabled
+  ```
+
+- The user should be in the `kvm` group:
+
+  ```
+  $ groups | grep -ow kvm
+  kvm
+  ```
 
 ### Setup Kata configuration files
 
@@ -178,8 +178,8 @@ $ podman run --runtime=kata ...
 > **NOTE:**
 >
 > A less recommended approach could be to have the absolute `kata-runtime`
-> path in the standard `$PATH` location instead of the configuration file, and
-> a binary with that name will be looked up automatically:
+> path in the standard `$PATH` location instead of the configuration file. In
+> this case it looks up a binary with that name automatically:
 >
 > ```bash
 > kata-runtime = [
@@ -207,13 +207,13 @@ $ podman run --rm --runtime=kata alpine date
 >
 >  - Enable
 >    [debug](https://github.com/kata-containers/documentation/blob/master/Developer-Guide.md#enable-full-debug)
->    in Kata (logs are added to journald).
+>    in Kata (this adds the logs to journald).
 >
->  - Pass `--log-level=debug` to Podman (logs are printed to stderr).
+>  - Pass `--log-level=debug` to Podman (this prints the logs to stderr).
 
 ## Appendix: Possible Errors
 
-If you are building from source you may encounter the following errors.
+If you are building from source you might encounter the following errors.
 
 ### Error caused by agent or runtime version mismatch
 
@@ -223,7 +223,7 @@ rpc error: code = Internal desc = Could not add route dest()/gw(10.0.2.2)/dev(ta
 
 **Solution:**
 
-You may need to
+You might need to
 [rebuild the agent](https://github.com/kata-containers/documentation/blob/master/Developer-Guide.md#add-a-custom-agent-to-the-image---optional);
 there was a change in both the
 [agent](https://github.com/kata-containers/agent/commit/a78e8cfda627cc350dc9d9ca9b969ebb642030c3)
