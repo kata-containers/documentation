@@ -108,11 +108,11 @@ Verify the configuration is correct:
 
 ### Setup Kata configuration files
 
-If the Kata `configuration.toml` file does not exist in `/etc`, do the
-following:
+If the Kata `configuration.toml` file does not exist in `/etc`, create it:
 
 ```bash
-$ sudo install -D -o ${USER} -g root -m 0640 /usr/share/defaults/kata-containers/configuration.toml /etc/kata-containers
+$ sudo mkdir -p /etc/kata-containers/
+$ sudo install -D -o ${USER} -g root -m 0640 /usr/share/defaults/kata-containers/configuration.toml /etc/kata-containers/
 ```
 
 Or, if the file exists, but is not readable by the user:
@@ -144,7 +144,7 @@ $ sudo chown -R a+r /usr/share/kata-containers
 If `libpod.conf` does not exist in `~/.config/containers/`:
 
 ```bash
-$ sudo install -D -o ${USER} -g ${USER} -m 0640 /usr/share/containers/libpod.conf ~/.config/containers/
+$ [ -e ~/.config/containers/libpod.conf ] || install -D /usr/share/containers/libpod.conf ~/.config/containers/libpod.conf
 ```
 
 By default the `tmp_dir` in `libpod.conf` is set to `/var/run/libpod`, however
@@ -162,14 +162,14 @@ You can tell Podman to create or run containers using the Kata runtime with
 You can directly pass the fully qualified Kata runtime path with:
 
 ```bash
-$ podman run --runtime=/usr/local/bin/kata-runtime ...
+$ podman run --runtime=/usr/bin/kata-runtime ...
 ```
 
 or add a `kata` entry in the `[runtimes]` section of the configuration file by
 appending the Kata Runtime binary path(s) to the `libpod.conf` file:
 
 ```bash
-$ echo 'kata = ["/usr/local/bin/kata-runtime"]' >> ~/.config/containers/libpod.conf
+$ echo 'kata = ["/usr/bin/kata-runtime"]' >> ~/.config/containers/libpod.conf
 ```
 
 and then use `kata` as the runtime name:
