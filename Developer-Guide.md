@@ -141,6 +141,15 @@ $ sudo sed -i -e 's/^# *\(enable_debug\).*=.*$/\1 = true/g' /etc/kata-containers
 $ sudo sed -i -e 's/^kernel_params = "\(.*\)"/kernel_params = "\1 agent.log=debug initcall_debug"/g' /etc/kata-containers/configuration.toml
 ```
 
+Notes: If you used containerd and kata shimv2 to launch kata runtime, the containerd's debug option will determine is the kata runtime's log
+forwared to containerd's log pipe. If you want to see the kata's log(including runtime's log and agent's log) from containerd's log, then you
+shouldn't only enable the full debug here, you should also enable containerd's debug by adding the following to your containerd's configure file:
+```
+[debug]
+        level = "debug"
+```
+For much info about the containerd's debug, please see: https://github.com/containerd/containerd/blob/master/docs/getting-started.md
+
 ### journald rate limiting
 
 Enabling [full debug](#enable-full-debug) results in the Kata components generating
