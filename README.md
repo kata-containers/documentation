@@ -2,7 +2,7 @@
 
 * [Getting Started](#getting-started)
 * [More User Guides](#more-user-guides)
-* [Kata Use-Cases](#kata-use-cases)
+* [Kata Container Use-Cases](#kata-container-use-cases)
 * [Developer Guide](#developer-guide)
     * [Design and Implementations](#design-and-implementations)
     * [How to Contribute](#how-to-contribute)
@@ -20,26 +20,27 @@ For details of the other Kata Containers repositories, see the
 
 ## Getting Started
 
-* [Installation guides](./install/README.md): Install and run Kata Containers with Docker or Kubernetes
+* [Installation guides](./install/README.md): 
+Install and run Kata Containers with Docker or Kubernetes
 
 ## More User Guides
 
-* [Upgrading](Upgrading.md): how to upgrade from [Clear Containers](https://github.com/clearcontainers) and [runV](https://github.com/hyperhq/runv) to [Kata Containers](https://github.com/kata-containers) and how to upgrade an existing Kata Containers system to the latest version.
-* [Limitations](Limitations.md): differences and limitations compared with the default [Docker](https://www.docker.com/) runtime,
+* [Upgrading](Upgrading.md): How to upgrade from [Intel Clear Containers](https://github.com/clearcontainers) and [runV](https://github.com/hyperhq/runv) to [Kata Containers](https://github.com/kata-containers) and how to upgrade an existing Kata Containers system to the latest version.
+* [Limitations](Limitations.md): Differences and limitations compared with the default [Docker](https://www.docker.com/) runtime,
 [`runc`](https://github.com/opencontainers/runc).
 
 ### Howto guides
 
-See the [howto documentation](how-to).
+See the [how-to documentation](how-to).
 
-## Kata Use-Cases
+## Kata Container Use-Cases
 
-* [GPU Passthrough with Kata](./use-cases/GPU-passthrough-and-Kata.md)
-* [OpenStack Zun with Kata Containers](./use-cases/zun_kata.md)
-* [SR-IOV with Kata](./use-cases/using-SRIOV-and-kata.md)
-* [Intel QAT with Kata](./use-cases/using-Intel-QAT-and-kata.md)
-* [VPP with Kata](./use-cases/using-vpp-and-kata.md)
-* [SPDK vhost-user with Kata](./use-cases/using-SPDK-vhostuser-and-kata.md)
+* [GPU Passthrough with Kata Containers](./use-cases/GPU-passthrough-and-Kata.md): Kata Containers supports passing certain GPUs from the host into the container.
+* [OpenStack Zun with Kata Containers](./use-cases/zun_kata.md): How to get Kata Containers to work with OpenStack Zun using DevStack on Ubuntu 16.04.
+* [SR-IOV with Kata Containers](./use-cases/using-SRIOV-and-kata.md): Setup to use SR-IOV with Kata Containers and Docker.
+* [Intel QAT with Kata Containers](./use-cases/using-Intel-QAT-and-kata.md): Setup instructions to download kernel source, compile kernel and driver modules, load the kernel, and prepare a specially-built Kata Containers kernel and rootfs.
+* [VPP with Kata Containers](./use-cases/using-vpp-and-kata.md): How to install and configure Vector Packet Processing (VPP) to improve router and switch functionality.
+* [SPDK vhost-user with Kata Containers](./use-cases/using-SPDK-vhostuser-and-kata.md): Setup and run Storage Performance Development Kit (SPDK) vhost-user devices with Kata Containers and Docker.
 
 ## Developer Guide
 
@@ -47,13 +48,13 @@ Documents that help to understand and contribute to Kata Containers.
 
 ### Design and Implementations
 
-* [Kata Containers Architecture](design/architecture.md): Architectural overview of Kata Containers
+* [Kata Containers architecture](design/architecture.md): Architectural overview of Kata Containers
 * [Kata Containers design](./design/README.md): More Kata Containers design documents
 * [Kata Containers threat model](./design/threat-model/threat-model.md): Kata Containers threat model
 
 ### How to Contribute
 
-* [Developer Guide](Developer-Guide.md): Setup the Kata Containers developing environments
+* [Developer Guide](Developer-Guide.md): Setup the Kata Containers development environments
 * [How to contribute to Kata Containers](https://github.com/kata-containers/community/blob/master/CONTRIBUTING.md)
 * [Code of Conduct](CODE_OF_CONDUCT.md)
 
@@ -64,14 +65,19 @@ Documents that help to understand and contribute to Kata Containers.
 ### The Release Process
 
 * [Release strategy](Stable-Branch-Strategy.md)
-* [Release Process](Release-Process.md)
+* [Release process](Release-Process.md)
 
 ## Help Improving the Documents
 
-* [Documentation Requirements](Documentation-Requirements.md)
+* [Documentation requirements](Documentation-Requirements.md)
 
 ## Website Changes
 
 If you have a suggestion for how we can improve the
 [website](https://katacontainers.io), please raise an issue (or a PR) on
 [the repository that holds the source for the website](https://github.com/OpenStackweb/kata-netlify-refresh).
+
+
+
+
+<!-- This is a comment -->
