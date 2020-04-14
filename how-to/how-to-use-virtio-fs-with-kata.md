@@ -39,7 +39,7 @@ This will place the Kata release artifacts in `/opt/kata`, and update Docker's c
 
 Once installed, start a new container, utilizing NEMU + `virtiofs`:
 ```bash
-$ docker run --runtime=kata-nemu -it busybox
+$ docker run --runtime=kata-qemu -it busybox
 ```
 
 Verify the new container is running with the NEMU hypervisor as well as using `virtiofsd`. To do this look for the hypervisor path and the `virtiofs` daemon process on the host:
