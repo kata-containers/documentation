@@ -26,7 +26,7 @@ the installation has been successful.
 ## Prerequisites
 
 This installation guide has only been verified under a Minikube Linux installation, using the
-[`kvm2`](https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm2-driver) driver.
+[`kvm2`](https://github.com/kubernetes/minikube/blob/master/site/content/en/docs/drivers/kvm2.md) driver.
 
 > **Notes:**
 > - This installation guide may not work for macOS installations of Minikube, due to the lack of
