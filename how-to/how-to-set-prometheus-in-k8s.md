@@ -60,7 +60,7 @@ go_gc_duration_seconds{quantile="0.75"} 0.000229911
 $ kubectl apply -f https://raw.githubusercontent.com/kata-containers/documentation/master/how-to/data/kata-magent-daemontset.yml
 ```
 
-This will create a new namespace `kata-system` and a deployment in it.
+This will create a new namespace `kata-system` and a `daemonset` in it.
 
 Once the `daemonset` is running, Prometheus should discover `kata-magent` as a target. You can open `http://<hostIP>:30909/service-discovery` and find `kubernetes-pods` under the `Service Discovery` list
 
