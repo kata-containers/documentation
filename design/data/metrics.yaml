@@ -964,23 +964,23 @@ components:
               fixed: false
               values: []
           since: 2.0.0
-    - prefix: kata_magent
-      title: Kata `magent` metrics
-      desc: Metrics about `magent` itself.
+    - prefix: kata_monitor
+      title: Kata monitor metrics
+      desc: Metrics about `kata-monitor` itself.
       metrics:
-        - name: kata_magent_go_gc_duration_seconds
+        - name: kata_monitor_go_gc_duration_seconds
           type: SUMMARY
           unit: seconds
           help: A summary of the pause duration of garbage collection cycles.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_goroutines
+        - name: kata_monitor_go_goroutines
           type: GAUGE
           unit: ""
           help: Number of goroutines that currently exist.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_info
+        - name: kata_monitor_go_info
           type: GAUGE
           unit: ""
           help: Information about the Go environment.
@@ -993,217 +993,217 @@ components:
                 - value: go1.13.9
                   desc: environment dependent variable
           since: 2.0.0
-        - name: kata_magent_go_memstats_alloc_bytes
+        - name: kata_monitor_go_memstats_alloc_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes allocated and still in use.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_alloc_bytes_total
+        - name: kata_monitor_go_memstats_alloc_bytes_total
           type: COUNTER
           unit: bytes
           help: Total number of bytes allocated, even if freed.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_buck_hash_sys_bytes
+        - name: kata_monitor_go_memstats_buck_hash_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes used by the profiling bucket hash table.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_frees_total
+        - name: kata_monitor_go_memstats_frees_total
           type: COUNTER
           unit: ""
           help: Total number of frees.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_gc_cpu_fraction
+        - name: kata_monitor_go_memstats_gc_cpu_fraction
           type: GAUGE
           unit: ""
           help: The fraction of this program's available CPU time used by the GC since the program started.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_gc_sys_bytes
+        - name: kata_monitor_go_memstats_gc_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes used for garbage collection system metadata.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_alloc_bytes
+        - name: kata_monitor_go_memstats_heap_alloc_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes allocated and still in use.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_idle_bytes
+        - name: kata_monitor_go_memstats_heap_idle_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes waiting to be used.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_inuse_bytes
+        - name: kata_monitor_go_memstats_heap_inuse_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes that are in use.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_objects
+        - name: kata_monitor_go_memstats_heap_objects
           type: GAUGE
           unit: ""
           help: Number of allocated objects.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_released_bytes
+        - name: kata_monitor_go_memstats_heap_released_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes released to OS.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_heap_sys_bytes
+        - name: kata_monitor_go_memstats_heap_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes obtained from system.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_last_gc_time_seconds
+        - name: kata_monitor_go_memstats_last_gc_time_seconds
           type: GAUGE
           unit: seconds
           help: Number of seconds since 1970 of last garbage collection.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_lookups_total
+        - name: kata_monitor_go_memstats_lookups_total
           type: COUNTER
           unit: ""
           help: Total number of pointer lookups.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_mallocs_total
+        - name: kata_monitor_go_memstats_mallocs_total
           type: COUNTER
           unit: ""
           help: Total number of mallocs.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_mcache_inuse_bytes
+        - name: kata_monitor_go_memstats_mcache_inuse_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes in use by mcache structures.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_mcache_sys_bytes
+        - name: kata_monitor_go_memstats_mcache_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes used for mcache structures obtained from system.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_mspan_inuse_bytes
+        - name: kata_monitor_go_memstats_mspan_inuse_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes in use by mspan structures.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_mspan_sys_bytes
+        - name: kata_monitor_go_memstats_mspan_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes used for mspan structures obtained from system.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_next_gc_bytes
+        - name: kata_monitor_go_memstats_next_gc_bytes
           type: GAUGE
           unit: bytes
           help: Number of heap bytes when next garbage collection will take place.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_other_sys_bytes
+        - name: kata_monitor_go_memstats_other_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes used for other system allocations.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_stack_inuse_bytes
+        - name: kata_monitor_go_memstats_stack_inuse_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes in use by the stack allocator.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_stack_sys_bytes
+        - name: kata_monitor_go_memstats_stack_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes obtained from system for stack allocator.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_memstats_sys_bytes
+        - name: kata_monitor_go_memstats_sys_bytes
           type: GAUGE
           unit: bytes
           help: Number of bytes obtained from system.
           labels: []
           since: 2.0.0
-        - name: kata_magent_go_threads
+        - name: kata_monitor_go_threads
           type: GAUGE
           unit: ""
           help: Number of OS threads created.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_cpu_seconds_total
+        - name: kata_monitor_process_cpu_seconds_total
           type: COUNTER
           unit: seconds
           help: Total user and system CPU time spent in seconds.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_max_fds
+        - name: kata_monitor_process_max_fds
           type: GAUGE
           unit: ""
           help: Maximum number of open file descriptors.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_open_fds
+        - name: kata_monitor_process_open_fds
           type: GAUGE
           unit: ""
           help: Number of open file descriptors.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_resident_memory_bytes
+        - name: kata_monitor_process_resident_memory_bytes
           type: GAUGE
           unit: bytes
           help: Resident memory size in bytes.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_start_time_seconds
+        - name: kata_monitor_process_start_time_seconds
           type: GAUGE
           unit: seconds
           help: Start time of the process since unix epoch in seconds.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_virtual_memory_bytes
+        - name: kata_monitor_process_virtual_memory_bytes
           type: GAUGE
           unit: bytes
           help: Virtual memory size in bytes.
           labels: []
           since: 2.0.0
-        - name: kata_magent_process_virtual_memory_max_bytes
+        - name: kata_monitor_process_virtual_memory_max_bytes
           type: GAUGE
           unit: bytes
           help: Maximum amount of virtual memory available in bytes.
           labels: []
           since: 2.0.0
-        - name: kata_magent_running_shim_count
+        - name: kata_monitor_running_shim_count
           type: GAUGE
           unit: ""
           help: Running shim count(running sandboxes).
           labels: []
           since: 2.0.0
-        - name: kata_magent_scrape_count
+        - name: kata_monitor_scrape_count
           type: COUNTER
           unit: ""
           help: Scape count.
           labels: []
           since: 2.0.0
-        - name: kata_magent_scrape_durations_histogram_milliseconds
+        - name: kata_monitor_scrape_durations_histogram_milliseconds
           type: HISTOGRAM
           unit: milliseconds
           help: Time used to scrape from shims
           labels: []
           since: 2.0.0
-        - name: kata_magent_scrape_failed_count
+        - name: kata_monitor_scrape_failed_count
           type: COUNTER
           unit: ""
           help: Failed scape count.

@@ -36,7 +36,7 @@
       "mode": "markdown",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Management agent",
+      "title": "Kata monitor",
       "type": "text"
     },
     {
@@ -86,7 +86,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(kata_magent_scrape_count[5m])*60",
+          "expr": "rate(kata_monitor_scrape_count[5m])*60",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -180,7 +180,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kata_magent_scrape_failed_count",
+          "expr": "kata_monitor_scrape_failed_count",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -274,7 +274,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kata_magent_running_shim_count",
+          "expr": "kata_monitor_running_shim_count",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -368,13 +368,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(kata_magent_scrape_durations_histogram_milliseconds_bucket[5m])) by (action,le))",
+          "expr": "histogram_quantile(0.99, sum(rate(kata_monitor_scrape_durations_histogram_milliseconds_bucket[5m])) by (action,le))",
           "interval": "",
           "legendFormat": "p99",
           "refId": "A"
         },
         {
-          "expr": "rate(kata_magent_scrape_durations_histogram_milliseconds_sum[5m])/rate(kata_magent_scrape_durations_histogram_milliseconds_count[5m])",
+          "expr": "rate(kata_monitor_scrape_durations_histogram_milliseconds_sum[5m])/rate(kata_monitor_scrape_durations_histogram_milliseconds_count[5m])",
           "interval": "",
           "legendFormat": "avg",
           "refId": "B"
@@ -468,13 +468,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kata_magent_go_goroutines",
+          "expr": "kata_monitor_go_goroutines",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "kata_magent_go_threads",
+          "expr": "kata_monitor_go_threads",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
@@ -568,7 +568,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kata_magent_process_open_fds",
+          "expr": "kata_monitor_process_open_fds",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -662,7 +662,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kata_magent_process_resident_memory_bytes",
+          "expr": "kata_monitor_process_resident_memory_bytes",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -756,7 +756,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(kata_magent_go_gc_duration_seconds_sum[5m])/rate(kata_magent_go_gc_duration_seconds_count[5m])",
+          "expr": "rate(kata_monitor_go_gc_duration_seconds_sum[5m])/rate(kata_monitor_go_gc_duration_seconds_count[5m])",
           "interval": "",
           "legendFormat": "",
           "refId": "B"

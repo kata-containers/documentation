@@ -2,7 +2,7 @@
 
 * [Limitations of Kata 1.x and the target of Kata 2.0](#limitations-of-kata-1x-and-the-target-of-kata-20)
 * [Metrics architecture](#metrics-architecture)
-  * [Kata `magent`](#kata-magent)
+  * [Kata monitor](#kata-monitor)
   * [Kata runtime](#kata-runtime)
   * [Kata agent](#kata-agent)
   * [Performance and overhead](#performance-and-overhead)
@@ -11,18 +11,18 @@
   * [Kata agent metrics](#kata-agent-metrics)
   * [Kata guest OS metrics](#kata-guest-os-metrics)
   * [Hypervisor metrics](#hypervisor-metrics)
-  * [Kata `magent` metrics](#kata-magent-metrics)
+  * [Kata monitor metrics](#kata-monitor-metrics)
   * [Kata containerd shim v2 metrics](#kata-containerd-shim-v2-metrics)
 
 Kata implement CRI's API and support [`ContainerStats`](https://github.com/kubernetes/kubernetes/blob/release-1.18/staging/src/k8s.io/cri-api/pkg/apis/runtime/v1alpha2/api.proto#L101) and [`ListContainerStats`](https://github.com/kubernetes/kubernetes/blob/release-1.18/staging/src/k8s.io/cri-api/pkg/apis/runtime/v1alpha2/api.proto#L103) interfaces to expose containers metrics. User can use these interface to get basic metrics about container.
 
-But unlike `runc`, Kata is a VM-based runtime and has a distinguish architecture.
+But unlike `runc`, Kata is a VM-based runtime and has a different architecture.
 
 ## Limitations of Kata 1.x and the target of Kata 2.0
 
 Kata 1.x has a number of limitations related to observability that may be obstacles to running Kata Containers at scale.
 
-In Kata 2.0, these parts will be took to provide more details about the system.
+In Kata 2.0, the following components will be able to provide more details about the system.
 
 - containerd shim v2 (effectively `kata-runtime`)
 - Hypervisor statistics
@@ -39,11 +39,10 @@ In Kata 2.0, these parts will be took to provide more details about the system.
 
 Kata 2.0 metrics strongly depend on [Prometheus](https://prometheus.io/), a graduated project from CNCF.
 
-Kata Containers 2.0 introduces a new Kata component called `kata-magent` which is used to monitor the other Kata components on the host. It's the monitor interface with Kata runtime, and we can do something like these:
+Kata Containers 2.0 introduces a new Kata component called `kata-monitor` which is used to monitor the other Kata components on the host. It's the monitor interface with Kata runtime, and we can do something like these:
 
 - Get metrics
 - Get events
-- Extend hypervisor commands
 
 In this document we will cover metrics only. And until now it only supports metrics function.
 
@@ -56,27 +55,28 @@ And the sequence diagram is shown below:
 
 ![Kata Containers 2.0 metrics ](arch-images/kata-metrics-sequence-diagram.png)
 
+For a quick evaluation, you can check out [this how to](../how-to/how-to-set-prometheus-in-k8s.md).
 
-### Kata `magent`
+### Kata monitor
 
-`magent` is a management agent on one node, where many Kata containers are running. `magent`'s work include:
+`kata-monitor` is a management agent on one node, where many Kata containers are running. `kata-monitor`'s work include:
 
 > **Note**: node is a single host system or a node in K8s clusters.
 
 - Aggregate sandbox metrics running on this node, and add `sandbox_id` label
 - As a Prometheus target, all metrics from Kata shim on this node will be collected by Prometheus indirectly. This can easy the targets count in Prometheus, and also need not to expose shim's metrics by `ip:port`
 
-Only one `magent` process are running on one node.
+Only one `kata-monitor` process are running on one node.
 
-`magent` is using a different communication channel other than that `conatinerd` communicating with Kata shim, and Kata shim listen on a new socket address for communicating with `magent`.
+`kata-monitor` is using a different communication channel other than that `conatinerd` communicating with Kata shim, and Kata shim listen on a new socket address for communicating with `kata-monitor`.
 
-The way `magent` get shim's metrics socket file(`magent_address`) like that `containerd` get shim address. The socket is an abstract socket and saved as file `abstract` with the same directory of `address` for `containerd`.
+The way `kata-monitor` get shim's metrics socket file(`monitor_address`) like that `containerd` get shim address. The socket is an abstract socket and saved as file `abstract` with the same directory of `address` for `containerd`.
 
-> **Note**: If there is no Prometheus server is configured, i.e., there is no scrape operations, `magent` will do nothing initiative.
+> **Note**: If there is no Prometheus server is configured, i.e., there is no scrape operations, `kata-monitor` will do nothing initiative.
 
 ### Kata runtime
 
-Runtime are mainly to:
+Runtime is responsible for:
 
 - Gather metrics about shim process
 - Gather metrics about hypervisor process
@@ -132,7 +132,7 @@ It's easy to estimated that if there are 10 sandboxes running in the host, the s
 
 And here is some test data:
 
-- End-to-end (from Prometheus server to `magent` and `magent` write response back): 20ms(avg)
+- End-to-end (from Prometheus server to `kata-monitor` and `kata-monitor` write response back): 20ms(avg)
 - Agent(RPC all from shim to agent): 3ms(avg)
 
 Test infrastructure:
@@ -146,7 +146,7 @@ Prometheus default `scrape_interval` is 1 minute, and usually it is set to 15s. 
 
 ## Metrics list
 
-Here listed is all supported metrics by Kata 2.0. Some metrics is depended on guest kernels in the VM, so there may be some different by your environment.
+Here listed is all supported metrics by Kata 2.0. Some metrics is dependent on guest kernels in the VM, so there may be some different by your environment.
 
 Metrics is categorized by component where metrics are collected from and for.
 
@@ -154,7 +154,7 @@ Metrics is categorized by component where metrics are collected from and for.
 * [Kata agent metrics](#kata-agent-metrics)
 * [Kata guest OS metrics](#kata-guest-os-metrics)
 * [Hypervisor metrics](#hypervisor-metrics)
-* [Kata `magent` metrics](#kata-magent-metrics)
+* [Kata monitor metrics](#kata-monitor-metrics)
 * [Kata containerd shim v2 metrics](#kata-containerd-shim-v2-metrics)
 
 > **Note**:
@@ -225,51 +225,51 @@ Hypervisors metrics, collected mainly from `proc` filesystem of hypervisor proce
 | `kata_hypervisor_proc_status`: <br> Hypervisor process status. | `GAUGE` |  | <ul><li>`item` (see `/proc/<pid>/status`)<ul><li>`hugetlbpages`</li><li>`nonvoluntary_ctxt_switches`</li><li>`rssanon`</li><li>`rssfile`</li><li>`rssshmem`</li><li>`vmdata`</li><li>`vmexe`</li><li>`vmhwm`</li><li>`vmlck`</li><li>`vmlib`</li><li>`vmpeak`</li><li>`vmpin`</li><li>`vmpmd`</li><li>`vmpte`</li><li>`vmrss`</li><li>`vmsize`</li><li>`vmstk`</li><li>`vmswap`</li><li>`voluntary_ctxt_switches`</li></ul></li><li>`sandbox_id`</li></ul> | 2.0.0 |
 | `kata_hypervisor_threads`: <br> Hypervisor process threads. | `GAUGE` |  | <ul><li>`sandbox_id`</li></ul> | 2.0.0 |
 
-### Kata `magent` metrics
+### Kata monitor metrics
 
-Metrics about `magent` itself.
+Metrics about monitor itself.
 
 | Metric name | Type | Units | Labels | Introduced in Kata version |
 |---|---|---|---|---|
-| `kata_magent_go_gc_duration_seconds`: <br> A summary of the pause duration of garbage collection cycles. | `SUMMARY` | `seconds` |  | 2.0.0 |
-| `kata_magent_go_goroutines`: <br> Number of goroutines that currently exist. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_go_info`: <br> Information about the Go environment. | `GAUGE` |  | <ul><li>`version` (golang version)<ul><li>`go1.13.9` (environment dependent variable)</li></ul></li></ul> | 2.0.0 |
-| `kata_magent_go_memstats_alloc_bytes`: <br> Number of bytes allocated and still in use. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_alloc_bytes_total`: <br> Total number of bytes allocated, even if freed. | `COUNTER` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_buck_hash_sys_bytes`: <br> Number of bytes used by the profiling bucket hash table. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_frees_total`: <br> Total number of frees. | `COUNTER` |  |  | 2.0.0 |
-| `kata_magent_go_memstats_gc_cpu_fraction`: <br> The fraction of this program's available CPU time used by the GC since the program started. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_go_memstats_gc_sys_bytes`: <br> Number of bytes used for garbage collection system metadata. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_alloc_bytes`: <br> Number of heap bytes allocated and still in use. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_idle_bytes`: <br> Number of heap bytes waiting to be used. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_inuse_bytes`: <br> Number of heap bytes that are in use. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_objects`: <br> Number of allocated objects. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_released_bytes`: <br> Number of heap bytes released to OS. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_heap_sys_bytes`: <br> Number of heap bytes obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_last_gc_time_seconds`: <br> Number of seconds since 1970 of last garbage collection. | `GAUGE` | `seconds` |  | 2.0.0 |
-| `kata_magent_go_memstats_lookups_total`: <br> Total number of pointer lookups. | `COUNTER` |  |  | 2.0.0 |
-| `kata_magent_go_memstats_mallocs_total`: <br> Total number of `mallocs`. | `COUNTER` |  |  | 2.0.0 |
-| `kata_magent_go_memstats_mcache_inuse_bytes`: <br> Number of bytes in use by `mcache` structures. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_mcache_sys_bytes`: <br> Number of bytes used for `mcache` structures obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_mspan_inuse_bytes`: <br> Number of bytes in use by `mspan` structures. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_mspan_sys_bytes`: <br> Number of bytes used for `mspan` structures obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_next_gc_bytes`: <br> Number of heap bytes when next garbage collection will take place. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_other_sys_bytes`: <br> Number of bytes used for other system allocations. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_stack_inuse_bytes`: <br> Number of bytes in use by the stack allocator. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_stack_sys_bytes`: <br> Number of bytes obtained from system for stack allocator. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_memstats_sys_bytes`: <br> Number of bytes obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_go_threads`: <br> Number of OS threads created. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_process_cpu_seconds_total`: <br> Total user and system CPU time spent in seconds. | `COUNTER` | `seconds` |  | 2.0.0 |
-| `kata_magent_process_max_fds`: <br> Maximum number of open file descriptors. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_process_open_fds`: <br> Number of open file descriptors. | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_process_resident_memory_bytes`: <br> Resident memory size in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_process_start_time_seconds`: <br> Start time of the process since `unix` epoch in seconds. | `GAUGE` | `seconds` |  | 2.0.0 |
-| `kata_magent_process_virtual_memory_bytes`: <br> Virtual memory size in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_process_virtual_memory_max_bytes`: <br> Maximum amount of virtual memory available in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
-| `kata_magent_running_shim_count`: <br> Running shim count(running sandboxes). | `GAUGE` |  |  | 2.0.0 |
-| `kata_magent_scrape_count`: <br> Scape count. | `COUNTER` |  |  | 2.0.0 |
-| `kata_magent_scrape_durations_histogram_milliseconds`: <br> Time used to scrape from shims | `HISTOGRAM` | `milliseconds` |  | 2.0.0 |
-| `kata_magent_scrape_failed_count`: <br> Failed scape count. | `COUNTER` |  |  | 2.0.0 |
+| `kata_monitor_go_gc_duration_seconds`: <br> A summary of the pause duration of garbage collection cycles. | `SUMMARY` | `seconds` |  | 2.0.0 |
+| `kata_monitor_go_goroutines`: <br> Number of goroutines that currently exist. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_go_info`: <br> Information about the Go environment. | `GAUGE` |  | <ul><li>`version` (golang version)<ul><li>`go1.13.9` (environment dependent variable)</li></ul></li></ul> | 2.0.0 |
+| `kata_monitor_go_memstats_alloc_bytes`: <br> Number of bytes allocated and still in use. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_alloc_bytes_total`: <br> Total number of bytes allocated, even if freed. | `COUNTER` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_buck_hash_sys_bytes`: <br> Number of bytes used by the profiling bucket hash table. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_frees_total`: <br> Total number of frees. | `COUNTER` |  |  | 2.0.0 |
+| `kata_monitor_go_memstats_gc_cpu_fraction`: <br> The fraction of this program's available CPU time used by the GC since the program started. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_go_memstats_gc_sys_bytes`: <br> Number of bytes used for garbage collection system metadata. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_alloc_bytes`: <br> Number of heap bytes allocated and still in use. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_idle_bytes`: <br> Number of heap bytes waiting to be used. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_inuse_bytes`: <br> Number of heap bytes that are in use. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_objects`: <br> Number of allocated objects. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_released_bytes`: <br> Number of heap bytes released to OS. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_heap_sys_bytes`: <br> Number of heap bytes obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_last_gc_time_seconds`: <br> Number of seconds since 1970 of last garbage collection. | `GAUGE` | `seconds` |  | 2.0.0 |
+| `kata_monitor_go_memstats_lookups_total`: <br> Total number of pointer lookups. | `COUNTER` |  |  | 2.0.0 |
+| `kata_monitor_go_memstats_mallocs_total`: <br> Total number of `mallocs`. | `COUNTER` |  |  | 2.0.0 |
+| `kata_monitor_go_memstats_mcache_inuse_bytes`: <br> Number of bytes in use by `mcache` structures. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_mcache_sys_bytes`: <br> Number of bytes used for `mcache` structures obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_mspan_inuse_bytes`: <br> Number of bytes in use by `mspan` structures. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_mspan_sys_bytes`: <br> Number of bytes used for `mspan` structures obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_next_gc_bytes`: <br> Number of heap bytes when next garbage collection will take place. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_other_sys_bytes`: <br> Number of bytes used for other system allocations. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_stack_inuse_bytes`: <br> Number of bytes in use by the stack allocator. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_stack_sys_bytes`: <br> Number of bytes obtained from system for stack allocator. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_memstats_sys_bytes`: <br> Number of bytes obtained from system. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_go_threads`: <br> Number of OS threads created. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_process_cpu_seconds_total`: <br> Total user and system CPU time spent in seconds. | `COUNTER` | `seconds` |  | 2.0.0 |
+| `kata_monitor_process_max_fds`: <br> Maximum number of open file descriptors. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_process_open_fds`: <br> Number of open file descriptors. | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_process_resident_memory_bytes`: <br> Resident memory size in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_process_start_time_seconds`: <br> Start time of the process since `unix` epoch in seconds. | `GAUGE` | `seconds` |  | 2.0.0 |
+| `kata_monitor_process_virtual_memory_bytes`: <br> Virtual memory size in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_process_virtual_memory_max_bytes`: <br> Maximum amount of virtual memory available in bytes. | `GAUGE` | `bytes` |  | 2.0.0 |
+| `kata_monitor_running_shim_count`: <br> Running shim count(running sandboxes). | `GAUGE` |  |  | 2.0.0 |
+| `kata_monitor_scrape_count`: <br> Scape count. | `COUNTER` |  |  | 2.0.0 |
+| `kata_monitor_scrape_durations_histogram_milliseconds`: <br> Time used to scrape from shims | `HISTOGRAM` | `milliseconds` |  | 2.0.0 |
+| `kata_monitor_scrape_failed_count`: <br> Failed scape count. | `COUNTER` |  |  | 2.0.0 |
 
 ### Kata containerd shim v2 metrics
 

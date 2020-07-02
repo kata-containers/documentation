@@ -1,19 +1,22 @@
 # How to monitor Kata Containers in Kubernetes clusters
 
-This document describes how to run `kata-magent` in a Kubernetes cluster using Prometheus's service discovery to scrape metrics from `kata-agent`.
+This document describes how to run `kata-monitor` in a Kubernetes cluster using Prometheus's service discovery to scrape metrics from `kata-agent`.
 
 - [Introduction](#introduction)
 - [Pre-requisites](#pre-requisites)
 - [Configure Prometheus](#configure-prometheus)
-- [Configure `kata-magent`](#configure-kata-magent)
+- [Configure `kata-monitor`](#configure-kata-monitor)
+- [Setup Grafana](#setup-grafana)
+  * [Create `datasource`](#create-datasource)
+  * [Import dashboard](#import-dashboard)
 
 > **Warning**: This how-to is only for evaluation purpose, you **SHOULD NOT** running it in production using this configurations.
 
 ## Introduction
 
-If you are running Kata containers in a Kubernetes cluster, the best way to run `kata-magent` is using Kubernetes native `DaemonSet`, `kata-magent` will run on desired Kubernetes nodes without other operations when new nodes joined the cluster.
+If you are running Kata containers in a Kubernetes cluster, the best way to run `kata-monitor` is using Kubernetes native `DaemonSet`, `kata-monitor` will run on desired Kubernetes nodes without other operations when new nodes joined the cluster.
 
-Prometheus also support a Kubernetes service discovery that can find scrape targets dynamically without explicitly setting `kata-magent`'s metric endpoints.
+Prometheus also support a Kubernetes service discovery that can find scrape targets dynamically without explicitly setting `kata-monitor`'s metric endpoints.
 
 ## Pre-requisites
 
@@ -52,17 +55,52 @@ go_gc_duration_seconds{quantile="0.5"} 0.000207421
 go_gc_duration_seconds{quantile="0.75"} 0.000229911
 ```
 
-## Configure `kata-magent`
+## Configure `kata-monitor`
 
-`kata-magent` can be started on the cluster as follows:
+`kata-monitor` can be started on the cluster as follows:
 
 ```
-$ kubectl apply -f https://raw.githubusercontent.com/kata-containers/documentation/master/how-to/data/kata-magent-daemontset.yml
+$ kubectl apply -f https://raw.githubusercontent.com/kata-containers/documentation/master/how-to/data/kata-monitor-daemontset.yml
 ```
 
 This will create a new namespace `kata-system` and a `daemonset` in it.
 
-Once the `daemonset` is running, Prometheus should discover `kata-magent` as a target. You can open `http://<hostIP>:30909/service-discovery` and find `kubernetes-pods` under the `Service Discovery` list
+Once the `daemonset` is running, Prometheus should discover `kata-monitor` as a target. You can open `http://<hostIP>:30909/service-discovery` and find `kubernetes-pods` under the `Service Discovery` list
+
+
+## Setup Grafana
+
+Run this command to run Grafana in Kubernetes:
+
+```
+$ kubectl apply -f https://raw.githubusercontent.com/kata-containers/documentation/master/how-to/data/grafana.yml
+```
+
+This will create deployment and service for Grafana under namespace `prometheus`.
+
+After the Grafana deployment is ready, you can open `http://hostIP:NodePort:30000/` to access Grafana server. For Grafana 7.0.5, the default user/password is `admin/admin`. You can modify the default account and adjust other security settings by editing the [Grafana configuration](https://grafana.com/docs/grafana/latest/installation/configuration/#security).
+
+To use Grafana show data from Prometheus, you must create a Prometheus `datasource` and dashboard.
+
+### Create `datasource`
+
+Open `http://hostIP:NodePort:30000/datasources/new` in your browser, select Prometheus from time series databases list.
+
+Normally you only need to set `URL` to `http://hostIP:NodePort:30909` to let it work, and leave the name as `Prometheus` as default.
+
+### Import dashboard
+
+A [sample dashboard](data/dashboard.json) for Kata Containers metrics is provided which can be imported to Grafana for evaluation.
+
+You can import this dashboard using Grafana UI, or using `curl` command in console.
+
+
+```
+$ curl -XPOST -i localhost:3000/api/dashboards/import \
+    -u admin:admin \
+    -H "Content-Type: application/json" \
+	-d "{\"dashboard\":$(curl -sL https://raw.githubusercontent.com/kata-containers/documentation/master/how-to/data/dashboard.json )}"
+```
 
 ## References
 

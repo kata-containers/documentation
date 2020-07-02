@@ -9,24 +9,24 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app.kubernetes.io/name: kata-magent
-  name: kata-magent
+    app.kubernetes.io/name: kata-monitor
+  name: kata-monitor
   namespace: kata-system
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: kata-magent
+      app.kubernetes.io/name: kata-monitor
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: kata-magent
+        app.kubernetes.io/name: kata-monitor
       annotations:
         prometheus.io/scrape: "true"
     spec:
       hostNetwork: true
       containers:
-      - name: kata-magent
-        image: docker.io/katadocker/kata-magent:2.0.0
+      - name: kata-monitor
+        image: docker.io/katadocker/kata-monitor:2.0.0
         args: 
           - -log-level=debug
         ports:
