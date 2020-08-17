@@ -9,13 +9,13 @@
 ![](./images/NIC%20passthrough%20Diagram.png)
 
 
-In this guide we walk through the process of passing a physical NIC into a Kata Containers. The "usual" way that a KC is wired for communication is through a bridge and virtual NIC as can be seen in the image above (marked as default). 
+In this guide we walk through the process of passing a physical NIC into Kata Containers. The "usual" way that a Kata Container is wired for communication is through a bridge and virtual NIC, as can be seen in the image above (marked as default).
 
 For some use cases, the container demands a direct link to the physical port of the host device, for example in a situation were the container is required to route high BW traffic without having support for acceleration such as SR-IOV.
 
 ## Before you start (Restrictions, Requirements and Assumptions)  
 
-The method described in this guide relays on your system [supporting  IOMMU.]( https://en.wikipedia.org/wiki/Input–output_memory_management_unit#Published_specifications) Before you start, make sure that your system has this attribute. If it does not, you should look for a different solution then the one presented here. 
+The method described in this guide relies on your system [supporting  IOMMU.]( https://en.wikipedia.org/wiki/Input–output_memory_management_unit#Published_specifications) Before you start, make sure that your system has this attribute. If it does not, you should look for a different solution then the one presented here. 
 
 If you are uncertain about your system’s support, the first two steps in [Part 1 – The Host](#part-1--the-host) should help you figure this out. 
 
@@ -187,7 +187,7 @@ docker run -it --runtime=kata-runtime --name vfio_con --device /dev/vfio/39 -v /
 If you aren’t sure what just happened back there, here’s a breakdown of the command:
 - `docker run` - creates and runs the container. 
 - ` -it ` - docker command flags for “interactive” and “tty”.
-- ` --runtime=kata-runtime ` - tells docker to run the container as a KC (if you set kata-runtime as the default runtime, this option is redundant).
+- ` --runtime=kata-runtime ` - tells docker to run the container as a Kata Container (if you set kata-runtime as the default runtime, this option is redundant).
 - ` --name vfio_con ` – name the container. It can be any name you choose. 
 - ` --device /dev/vfio/39 ` – this one is the important part. With this command, you tell docker to pass the NIC to the container. 
 - `-v /dev:/dev `– here you tell docker to map the devices folder of the host to the devices folder of the container.
