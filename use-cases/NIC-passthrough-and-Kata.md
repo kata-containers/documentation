@@ -9,13 +9,13 @@
 ![](./images/NIC%20passthrough%20Diagram.png)
 
 
-In this guide we walk through the process of passing a physical NIC into a KC (Kata Container). The "usual" way that a KC is wired for communication is through a series of bridges and virtual NICs as can be seen in the Image above (marked as default). 
+In this guide we walk through the process of passing a physical NIC into a Kata Containers. The "usual" way that a KC is wired for communication is through a bridge and virtual NIC as can be seen in the image above (marked as default). 
 
 For some use cases, the container demands a direct link to the physical port of the host device, for example in a situation were the container is required to route high BW traffic without having support for acceleration such as SR-IOV.
 
 ## Before you start (Restrictions, Requirements and Assumptions)  
 
-The method described in this guide relays on your system [supporting  IOMMU.]( https://en.wikipedia.org/wiki/Input–output_memory_management_unit#Published_specifications) before you start, make sure that your system has this attribute. If it does not, you should look for a different solution then the one presented here. 
+The method described in this guide relays on your system [supporting  IOMMU.]( https://en.wikipedia.org/wiki/Input–output_memory_management_unit#Published_specifications) Before you start, make sure that your system has this attribute. If it does not, you should look for a different solution then the one presented here. 
 
 If you are uncertain about your system’s support, the first two steps in [Part 1 – The Host](#part-1--the-host) should help you figure this out. 
 
