@@ -48,7 +48,7 @@ Kata is packaged by the Kata community for:
 
 Kata packages are provided by official distribution repositories for:
 
-|Distribution (link to packages)                          | Versions                                                                       |
+|Distribution (link to installation guide)                | Versions                                                                       |
 |---------------------------------------------------------|--------------------------------------------------------------------------------|
 |[CentOS](centos-installation-guide.md)                   | 8                                                                              |
 |[Fedora](fedora-installation-guide.md)                   | 33, 34, Rawhide                                                                | 
