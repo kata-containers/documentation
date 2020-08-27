@@ -41,7 +41,7 @@ Kata is packaged by the Kata community for:
 
 |Distribution (link to installation guide)                        | Versions                                                                                                          |
 |-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-|[Debian](debian-installation-guide.md)                           | 9, 10                                                                                                             |
+|[Debian](debian-installation-guide.md)                           | 9                                                                                                                 |
 |[Ubuntu](ubuntu-installation-guide.md)                           | 16.04, 18.04                                                                                                      |
 
 #### Official packages
