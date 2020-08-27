@@ -39,10 +39,10 @@ to see if your system is capable of running Kata Containers.
 
 Kata is packaged by the Kata community for:
 
-|Distribution (link to installation guide)                        | Versions                                                                                                          |
-|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-|[Debian](debian-installation-guide.md)                           | 9                                                                                                                 |
-|[Ubuntu](ubuntu-installation-guide.md)                           | 16.04, 18.04                                                                                                      |
+|Distribution (link to installation guide)                        | Versions     | Notes
+|-----------------------------------------------------------------|--------------|---------------------------------------------------------------|
+|[Debian](debian-installation-guide.md)                           | 9            |                                                               |
+|[Ubuntu](ubuntu-installation-guide.md)                           | 16.04, 18.04 | Snap is the preferred way for using kata-containers on Ubuntu |
 
 #### Official packages
 
