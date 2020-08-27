@@ -382,22 +382,21 @@ You can build and install the guest kernel image as shown [here](https://github.
 
 # Install a hypervisor
 
-When setting up Kata using a [packaged installation method](https://github.com/kata-containers/documentation/tree/master/install#installing-on-a-linux-system), the `qemu-lite` hypervisor is installed automatically. For other installation methods, you will need to manually install a suitable hypervisor.
+When setting up Kata using a [packaged installation method](https://github.com/kata-containers/documentation/tree/master/install#installing-on-a-linux-system),
+the `QEMU` VMM is installed automatically. Cloud-Hypervisor and Firecracker VMMs are available from the [release tarballs](https://github.com/kata-containers/runtime/releases). 
+You may choose to manually build your VMM/hypervisor.
 
 ## Build a custom QEMU
 
-Your QEMU directory need to be prepared with source code. Alternatively, you can use the [Kata containers QEMU](https://github.com/kata-containers/qemu/tree/master) and checkout the recommended branch:
+Kata Containers makes use of upstream QEMU branch. The exact version
+and repository utilized can be found by looking at the [runtime's versions file](https://github.com/kata-containers/runtime/blob/master/versions.yaml)
 
-```
-$ go get -d github.com/kata-containers/qemu
-$ qemu_branch=$(grep qemu-lite- ${GOPATH}/src/github.com/kata-containers/runtime/versions.yaml | cut -d '"' -f2)
-$ cd ${GOPATH}/src/github.com/kata-containers/qemu
-$ git checkout -b $qemu_branch remotes/origin/$qemu_branch
-$ your_qemu_directory=${GOPATH}/src/github.com/kata-containers/qemu
-```
+Kata often utilizes patches for not-yet-upstream fixes for components,
+including QEMU. These can be found in the packaging repository in the
+[QEMU
+directory](https://github.com/kata-containers/packaging/tree/master/qemu/patches).
 
-To build a version of QEMU using the same options as the default `qemu-lite` version , you could use the `configure-hypervisor.sh` script:
-
+To build utilizing the same options as Kata, you should make use of the `configure-hypervisor.sh` script. For example:
 ```
 $ go get -d github.com/kata-containers/packaging
 $ cd $your_qemu_directory
@@ -406,6 +405,9 @@ $ eval ./configure "$(cat kata.cfg)"
 $ make -j $(nproc)
 $ sudo -E make install
 ```
+
+See the [static-build script for QEMU](https://github.com/kata-containers/packaging/blob/master/static-build/qemu/build-static-qemu.sh) for a reference on how to get,
+setup, configure and build QEMU for Kata.
 
 ### Build a custom QEMU for aarch64/arm64 - REQUIRED
 > **Note:**
