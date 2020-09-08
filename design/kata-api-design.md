@@ -23,17 +23,24 @@ To fulfill the [Kata design requirements](kata-design-requirements.md), and base
 
 |Name|Description|
 |---|---|
-|`sandbox.Pause()`| Pause the sandbox.|
-|`sandbox.Resume()`| Resume the paused sandbox.|
-|`sandbox.Release()`| Release a sandbox data structure, close connections to the agent, and quit any goroutines associated with the sandbox. Mostly used for daemon restart.|
 |`sandbox.Delete()`| Destroy the sandbox and remove all persistent metadata.|
-|`sandbox.Status()`| Get the status of the sandbox and containers.|
 |`sandbox.Monitor()`| Return a context handler for caller to monitor sandbox callbacks such as error termination.|
+|`sandbox.Release()`| Release a sandbox data structure, close connections to the agent, and quit any goroutines associated with the sandbox. Mostly used for daemon restart.|
+|`sandbox.Start()`| Start a a sandbox and the containers making the sandbox.|
+|`sandbox.Status()`| Get the status of the sandbox and containers.|
+|`sandbox.Stop()`| Stop a sandbox and Destroy the containers in the sandbox..|
 |`sandbox.CreateContainer()`| Create new container in the sandbox.|
 |`sandbox.DeleteContainer()`| Delete a container from the sandbox.|
-|`sandbox.StartContainer()`| Start a container in the sandbox.|
-|`sandbox.StatusContainer()`| Get the status of a container in the sandbox.|
 |`sandbox.EnterContainer()`| Run a new process in a container.|
+|`sandbox.KillContainer()`| Signal a container in the sandbox.|
+|`sandbox.PauseContainer()`| Pause a running container in the sandbox.|
+|`sandbox.ProcessListContainer()`| List every process running inside a specific container in the sandbox.|
+|`sandbox.ResumeContainer()`| Resume a paused container in the sandbox.|
+|`sandbox.StartContainer()`| Start a container in the sandbox.|
+|`sandbox.StatsContainer()`| Return the stats of a running container.|
+|`sandbox.StatusContainer()`| Get the status of a container in the sandbox.|
+|`sandbox.StopContainer()`| Stop a container in the sandbox.|
+|`sandbox.UpdateContainer()`| Update a running container in the sandbox.|
 |`sandbox.WaitProcess()`| Wait on a process to terminate.|
 ### Sandbox Hotplug API
 |Name|Description|
