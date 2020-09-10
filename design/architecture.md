@@ -552,13 +552,10 @@ with a Kubernetes pod:
 
 #### Mixing VM based and namespace based runtimes
 
-> **Note:** Since Kubernetes 1.12, the [`Kubernetes RuntimeClass`](/how-to/containerd-kata.md#kubernetes-runtimeclass)
+> **Note:** Since Kubernetes 1.12 (CRI-0 1.12), the [`Kubernetes RuntimeClass`](/how-to/containerd-kata.md#kubernetes-runtimeclass)
 > has been supported and the user can specify runtime without the non-standardized annotations.
 
-One interesting evolution of the CRI-O support for `kata-runtime` is the ability
-to run virtual machine based pods alongside namespace ones. With CRI-O and Kata
-Containers, one can introduce the concept of workload trust inside a Kubernetes
-cluster.
+For CRI-O version below 1.14, to run Kata Containers alongside regular namespace/cgroup based containers one can introduce the concept of workload trust inside a Kubernetes cluster.
 
 A cluster operator can now tag (through Kubernetes annotations) container workloads
 as `trusted` or `untrusted`. The former labels known to be safe workloads while
