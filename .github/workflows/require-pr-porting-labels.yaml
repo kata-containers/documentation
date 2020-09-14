@@ -32,103 +32,20 @@ jobs:
         with:
           token: ${{ secrets.KATA_GITHUB_ACTIONS_TOKEN }}
 
-      - name: Stop PR being merged unless it has atleast one backport label and one forward port label
+      - name: Install porting checker script
+        run: |
+          # Clone into a temporary directory to avoid overwriting
+          # any existing github directory.
+          pushd $(mktemp -d) &>/dev/null
+          git clone --single-branch --depth 1 "https://github.com/kata-containers/.github" && cd .github/scripts
+          sudo install pr-porting-checks.sh /usr/local/bin
+          popd &>/dev/null
+
+      - name: Stop PR being merged unless it has a correct set of porting labels
         env:
           GITHUB_TOKEN: ${{ secrets.KATA_GITHUB_ACTIONS_TOKEN }}
         run: |
           pr=${{ github.event.number }}
+          repo=${{ github.repository }}
 
-          # Every PR must have two porting labels before it can be merged.
-          # This is to ensure it is clear that a reviewer has considered both
-          # porting directions.
-          backport_labels=("needs-backport" "no-backport-needed" "backport")
-          forward_port_labels=("needs-forward-port" "no-forward-port-needed" "forward-port")
-
-          labels=$(hub api "/repos/{owner}/{repo}/labels" | jq -r '.[].name')
-
-          for label in ${backport_labels[@]} ${forward_port_labels[@]}
-          do
-            { echo "$labels"| egrep -q "^${label}$"; ret=$?; } || true
-
-            [ $ret -eq 0 ] || {
-              echo "::error::Expected label '$label' not available in repository ${{ github.repository }}"
-              exit 1
-            }
-          done
-
-          pr_details=$(hub pr list -f '%I;%L%n' | grep "^${pr}" || true)
-
-          [ -z "$pr_details" ] && {
-            echo "::error::Cannot determine details for PR $pr"
-            exit 1
-          }
-
-          pr_labels=$(echo "$pr_details"|cut -d';' -f2|tr ',' ' ')
-
-          [ -z "$pr_labels" ] && {
-            printf "::error::PR %s does not have required porting labels (expected one of '%s' and one of '%s')\n" \
-                   "$pr" \
-                   $(echo "$backport_labels" | tr ' ' ',') \
-                   $(echo "$forward_port_labels" | tr ' ' ',')
-            exit 1
-          }
-
-          backport_labels_found=()
-
-          for label in ${backport_labels[@]}
-          do
-            echo "$pr_labels" | grep -qw "$label" \
-              && backport_labels_found+=("$label")
-          done
-
-          [ "${#backport_labels_found[@]}" -eq 0 ] && {
-            printf "::error::PR %s missing a backport label (expected one of '%s')\n" \
-                   "$pr" \
-                   $(echo "$backport_labels" | tr ' ' ',')
-            exit 1
-          }
-
-          [ "${#backport_labels_found[@]}" -gt 1 ] && {
-            printf "::error::PR %s has too many backport labels (expected one of '%s', found '%s')\n" \
-                   "$pr" \
-                   $(echo "$backport_labels" | tr ' ' ',') \
-                   $(echo "$backport_labels_found" | tr ' ' ',')
-            exit 1
-          }
-
-          forward_port_labels_found=()
-
-          for label in ${forward_port_labels[@]}
-          do
-            echo "$pr_labels" | grep -qw "$label" \
-              && forward_port_labels_found+=("$label")
-          done
-
-          [ "${#forward_port_labels_found[@]}" -eq 0 ] && {
-            printf "::error::PR %s missing a forward port label (expected one of '%s')\n" \
-                    "$pr" \
-                    $(echo "$forward_port_labels" | tr ' ' ',')
-            exit 1
-          }
-
-          [ "${#forward_port_labels_found[@]}" -gt 1 ] && {
-            printf "::error::PR %s has too many forward port labels (expected one of '%s', found '%s')\n" \
-                    "$pr" \
-                    $(echo "$forward_port_labels" | tr ' ' ',') \
-                    $(echo "$forward_port_labels_found" | tr ' ' ',')
-            exit 1
-          }
-
-          [ "$backport_labels_found" = 'backport-pr' ] && \
-          [ "$forward_port_labels_found" = 'forward-port-pr' ] && {
-            printf "::error::PR %s cannot be labelled as both backport ('%s') and forward port ('%s')\n" \
-                   "$pr" \
-                   "$backport_labels_found" \
-                   "$forward_port_labels_found"
-            exit 1
-          }
-
-          printf "::debug::PR %s has required porting labels (backport label '%s', forward port label '%s')\n" \
-                  "$pr" \
-                  "$backport_labels_found" \
-                  "$forward_port_labels_found"
+          pr-porting-checks.sh "$pr" "$repo"
