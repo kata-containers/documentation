@@ -41,13 +41,12 @@ Kata is packaged by the Kata community for:
 
 |Distribution (link to installation guide)                        | Versions                                                                                                          |
 |-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-|[CentOS](centos-installation-guide.md)                           | 7                                                                                                                 |
+|[CentOS](centos-installation-guide.md)                           | 7, 8                                                                                                              |
 |[Debian](debian-installation-guide.md)                           | 9, 10                                                                                                             |
-|[Fedora](fedora-installation-guide.md)                           | 28, 29, 30                                                                                                        |
+|[Fedora](fedora-installation-guide.md)                           | 30                                                                                                                |
 |[openSUSE](opensuse-installation-guide.md)                       | [Leap](opensuse-leap-installation-guide.md) (15, 15.1)<br>[Tumbleweed](opensuse-tumbleweed-installation-guide.md) |
-|[Red Hat Enterprise Linux (RHEL)](rhel-installation-guide.md)    | 7                                                                                                                 |
-|[SUSE Linux Enterprise Server (SLES)](sles-installation-guide.md)| SLES 12 SP3                                                                                                       |
-|[Ubuntu](ubuntu-installation-guide.md)                           | 16.04, 18.04                                                                                                      |
+|[SUSE Linux Enterprise Server (SLES)](sles-installation-guide.md)| SLES 15 SP1                                                                                                       |
+|[Ubuntu](ubuntu-installation-guide.md)                           | 16.04, 18.04, 20.04                                                                                               |
 
 #### Official packages
 
