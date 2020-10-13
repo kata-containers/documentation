@@ -20,7 +20,7 @@ Please use following unofficial version of the Linux kernel and QEMU that suppor
 The Linux kernel is at https://github.com/davidhildenbrand/linux/tree/virtio-mem-rfc-v4.
 The Linux kernel config that can work with Kata Containers is at https://gist.github.com/teawater/016194ee84748c768745a163d08b0fb9.
 
-The QEMU is at https://github.com/teawater/qemu/tree/kata-virtio-mem. (The original source is at https://github.com/davidhildenbrand/qemu/tree/virtio-mem.  Its base version of QEMU cannot work with Kata Containers.  So merge the commit of `virtio-mem` to upstream QEMU.)
+The QEMU is at https://github.com/teawater/qemu/tree/kata-virtio-mem. (The original source is at https://github.com/davidhildenbrand/qemu/tree/virtio-mem-vfio.  Its base version of QEMU cannot work with Kata Containers.  So merge the commit of `virtio-mem` to upstream QEMU.)
 
 Set Linux and the QEMU that support `virtio-mem` with following line in the Kata Containers QEMU configuration `configuration-qemu.toml`:
 ```toml

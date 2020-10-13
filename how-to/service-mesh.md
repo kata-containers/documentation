@@ -76,7 +76,7 @@ is not able to perform a proper setup of the rules.
 
 ### Service Mesh Istio
 
-As a reference, you can follow Istio [instructions](https://istio.io/docs/setup/kubernetes/quick-start/#download-and-prepare-for-the-installation).
+As a reference, you can follow Istio [instructions](https://istio.io/latest/docs/setup/getting-started/#download-and-prepare-for-the-installation).
 
 The following is a summary of what you need to install Istio on your system:
 ```
