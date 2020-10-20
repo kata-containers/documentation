@@ -3,6 +3,7 @@
 * [Introduction](#introduction)
 * [Full Installation](#full-installation)
 * [Install the Kata packages only](#install-the-kata-packages-only)
+* [Validate the installation](#validate-the-installation)
 * [Further Information](#further-information)
 
 ## Introduction
@@ -42,6 +43,8 @@ Use the following command to only install Kata Containers packages.
 ```bash
 $ bash -c "$(curl -fsSL https://raw.githubusercontent.com/kata-containers/tests/master/cmd/kata-manager/kata-manager.sh) install-packages"
 ```
+## Validate the installation
+To validate the installation, run the [kata-check command](https://github.com/kata-containers/runtime#hardware-requirements). To obtain a detailed list of configuration values, run the [kata-env command](https://github.com/kata-containers/runtime#configuration).
 
 ## Further Information
 For more information on what `kata-manager` can do, refer to the [`kata-manager` page](https://github.com/kata-containers/tests/blob/master/cmd/kata-manager).
