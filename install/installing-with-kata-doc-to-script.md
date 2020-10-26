@@ -17,7 +17,7 @@ to generate installation bash scripts.
 
 ```bash
 $ source /etc/os-release
-$ curl -fsSL -O https://raw.githubusercontent.com/kata-containers/documentation/master/install/${ID}-installation-guide.md
+$ curl -fsSL -O https://github.com/kata-containers/documentation/tree/master/install/${ID}-installation-guide.md
 $ bash -c "$(curl -fsSL https://raw.githubusercontent.com/kata-containers/tests/master/.ci/kata-doc-to-script.sh) ${ID}-installation-guide.md ${ID}-install.sh"
 ```
 
@@ -33,7 +33,7 @@ $ bash "./${ID}-install.sh"
 
 ```bash
 $ source /etc/os-release
-$ curl -fsSL -O https://raw.githubusercontent.com/kata-containers/documentation/master/install/docker/${ID}-docker-install.md
+$ curl -fsSL -O https://github.com/kata-containers/documentation/tree/master/install/docker${ID}-docker-install.md
 $ bash -c "$(curl -fsSL https://raw.githubusercontent.com/kata-containers/tests/master/.ci/kata-doc-to-script.sh) ${ID}-docker-install.md ${ID}-docker-install.sh"
 ```
 
