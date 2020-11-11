@@ -7,7 +7,7 @@ You can ignore the content of this comment.
 
 ```bash
 $ echo "NOTE: this document is just a link to the generic openSUSE install guide located at:
-https://raw.githubusercontent.com/kata-containers/documentation/master/install/docker/opensuse-docker-install.md
+https://github.com/kata-containers/documentation/tree/master/install/docker/opensuse-docker-install.md
 
 Please download this file and run kata-doc-to-script.sh again."
 ```
