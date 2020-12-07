@@ -208,8 +208,8 @@ that checks both dictionary words and the additional terms we use.
 Run the spell checking tool on your document before raising a PR to ensure it
 is free of mistakes.
 
-If your document introduces new terms, you need to update the custom
-dictionary used by the spell checking tool to incorporate the new words.
+If your document introduces new terms, you need to [update the custom
+dictionary](https://github.com/kata-containers/tests/tree/master/cmd/check-spelling#adding-a-new-word) used by the spell checking tool to incorporate the new words.
 
 # Names
 
