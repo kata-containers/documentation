@@ -128,8 +128,8 @@ configured for you) to deploy them:
 ```sh
 $ git clone https://github.com/kata-containers/packaging.git
 $ cd packaging/kata-deploy
-$ kubectl apply -f kata-deploy/base/kata-rbac.yaml
-$ kubectl apply -f kata-rbac/base/kata-deploy.yaml
+$ kubectl apply -f kata-deploy/base/kata-deploy.yaml
+$ kubectl apply -f kata-rbac/base/kata-rbac.yaml
 ```
 
 This installs the Kata Containers components into `/opt/kata` inside the Minikube node. It can take
