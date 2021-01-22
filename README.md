@@ -27,7 +27,7 @@ For details of the other Kata Containers repositories, see the
 * [Upgrading](Upgrading.md): how to upgrade from [Clear Containers](https://github.com/clearcontainers) and [runV](https://github.com/hyperhq/runv) to [Kata Containers](https://github.com/kata-containers) and how to upgrade an existing Kata Containers system to the latest version.
 * [Limitations](Limitations.md): differences and limitations compared with the default [Docker](https://www.docker.com/) runtime,
 [`runc`](https://github.com/opencontainers/runc).
-* [Glossary](Glossary.md): Glossary of terms related to Kata Containers.
+* [Glossary](Glossary.md): glossary of terms related to Kata Containers.
 
 ### Howto guides
 
