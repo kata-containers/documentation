@@ -20,7 +20,7 @@ For details of the other Kata Containers repositories, see the
 
 ## Getting Started
 
-* [Installation guides](./install/README.md): 
+* [Installation guides](./install/README.md):
 Install and run Kata Containers with Docker or Kubernetes
 
 ## More User Guides
