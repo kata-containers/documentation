@@ -222,8 +222,8 @@ Jun 29 14:51:17 mymachine systemd-journald[346]: Suppressed 4150 messages from /
 ```
 
 This message indicates that a number of log messages from the `docker.service` slice were
-suppressed. In such a case, you can expect to have incomplete logging information
-stored from the Kata Containers components.
+suppressed. In such a case, you can expect to have incomplete logging
+information stored from the Kata Containers components.
 
 #### Disabling `systemd-journald` rate limiting
 
