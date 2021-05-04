@@ -90,6 +90,8 @@ There are several kinds of Kata configurations and they are listed below.
 | `io.katacontainers.config.hypervisor.virtio_fs_cache` | string | the cache mode for virtio-fs, valid values are `always`, `auto` and `none` |
 | `io.katacontainers.config.hypervisor.virtio_fs_daemon` (R) | string | virtio-fs `vhost-user` daemon path |
 | `io.katacontainers.config.hypervisor.virtio_fs_extra_args` | string | extra options passed to `virtiofs` daemon |
+| `io.katacontainers.config.hypervisor.rx_rate_limiter_max_rate` | uint64 | `rx` rate limiter for throttling network I/O inbound bandwidth |
+| `io.katacontainers.config.hypervisor.tx_rate_limiter_max_rate` | uint64 | `tx` rate limiter for throttling network I/O outbound bandwidth |
 
 # CRI Configuration
 
